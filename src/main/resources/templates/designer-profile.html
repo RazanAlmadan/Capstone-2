@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${designer.name}">Designer Profile</title>
+    <link rel="stylesheet" href="/css/designer-profile.css">
+</head>
+
+<body>
+
+<header class="header">
+    <h1 th:text="${designer.name}"></h1>
+    <p th:text="${designer.visualField}"></p>
+</header>
+
+<section class="profile-section fade-in">
+
+    <img th:src="${designer.profileImageUrl}" class="profile-img">
+
+    <div class="profile-info">
+        <h2>About</h2>
+        <p th:text="${designer.bio}"></p>
+
+        <button class="hire-btn" onclick="toggleRequestBox()">Hire Designer</button>
+
+        <div id="requestBox" class="request-box" style="display:none;">
+            <h3>Send a Project Request</h3>
+
+            <form th:action="@{/api/v1/client/send-request/{id}(id=${designer.id})}"
+                  method="post"
+                  onsubmit="sendRequest(event)">
+                <input type="hidden" name="clientId" value="1">
+                <textarea name="projectDetails" placeholder="Describe your project..." required></textarea>
+                <button type="submit" class="btn-primary">Send Request</button>
+            </form>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="catalog-section fade-in">
+    <h2>Catalog</h2>
+
+    <div class="catalog-grid">
+        <div class="catalog-card" th:each="catalog : ${catalogs}">
+            <img th:src="${catalog.images[0]}" class="catalog-img">
+        </div>
+    </div>
+</section>
+
+<script>
+    function sendRequest(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        fetch(form.action, {
+            method: "POST",
+            body: new FormData(form)
+        })
+            .then(res => res.text())
+            .then(msg => alert(msg))
+            .catch(err => alert("Error sending request"));
+    }
+
+    function toggleRequestBox() {
+        const box = document.getElementById("requestBox");
+        box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+</script>
+
+</body>
+</html>

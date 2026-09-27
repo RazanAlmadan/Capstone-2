@@ -1,0 +1,202 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(180deg, #ffffff 0%, #f4f6ff 40%, #fff0e0 100%);
+    color: #0D1B2A;
+}
+
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    height: 60px;
+    width: auto;
+}
+
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #0D1B2A;
+    font-weight: 500;
+}
+
+.nav-buttons .btn-outline,
+.nav-buttons .btn-primary {
+    margin-left: 15px;
+}
+
+/* BUTTONS */
+.btn-primary {
+    background: linear-gradient(90deg, #007BFF, #6F00FF, #FF6A00, #FFC300);
+    padding: 12px 22px;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-outline {
+    border: 2px solid #007BFF;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-small {
+    background: #007BFF;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* HERO */
+.hero {
+    display: flex;
+    justify-content: space-between;
+    padding: 80px 60px;
+}
+
+.hero-left {
+    max-width: 500px;
+}
+
+.hero-left h1 {
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.hero-left p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #555;
+}
+
+.hero-buttons {
+    margin-top: 25px;
+    display: flex;
+    gap: 20px;
+}
+
+.hero-right .mockup-card {
+    width: 350px;
+    height: 250px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* HOW IT WORKS */
+.how-it-works {
+    text-align: center;
+    padding: 80px 60px;
+}
+
+.steps {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 40px;
+}
+
+.step {
+    width: 250px;
+}
+
+.step-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+/* FEATURED DESIGNERS */
+.featured {
+    padding: 80px 60px;
+}
+
+.designer-grid {
+    display: flex;
+    gap: 40px;
+}
+
+.designer-card {
+    width: 250px;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.designer-img {
+    width: 100%;
+    height: 150px;
+    background: #DDD;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* AI SECTION */
+.ai-section {
+    text-align: center;
+    padding: 80px 60px;
+}
+
+.ai-form {
+    margin-top: 20px;
+}
+
+.ai-form input {
+    width: 350px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #CCC;
+    margin-right: 10px;
+}
+
+/* Fade-in animation */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 30px;
+    background: #EEE;
+    margin-top: 40px;
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasmeem Hub</title>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">
+        <img src="/css/images/logo.png" alt="Tasmeem Hub Logo">
+        <span>Tasmeem Hub</span>
+    </div>
+
+    <ul class="nav-links">
+        <li><a href="/designers">Designers</a></li>
+        <li><a href="/catalogs">Catalogs</a></li>
+        <li><a href="/ai">AI Matching</a></li>
+        <li><a href="/about">About</a></li>
+    </ul>
+
+    <div class="nav-buttons">
+        <a href="/login" class="btn-outline">Login</a>
+        <a href="/register" class="btn-primary">Join</a>
+    </div>
+</nav>
+
+
+<!-- HERO SECTION -->
+<section class="hero fade-in">
+    <div class="hero-left">
+        <h1>Transform your ideas into stunning designs</h1>
+        <p>Saudi Arabia’s modern marketplace connecting clients with talented designers.</p>
+
+        <div class="hero-buttons">
+            <a href="/designers" class="btn-primary">Find Designers</a>
+            <a href="/register-designer" class="btn-outline">Become a Designer</a>
+        </div>
+    </div>
+
+    <div class="hero-right">
+        <div class="mockup-card">
+            <div class="mockup-img"></div>
+            <p class="mockup-text">Explore creative portfolios</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works fade-in">
+    <h2>How It Works</h2>
+
+    <div class="steps">
+        <div class="step">
+            <div class="step-icon">🎨</div>
+            <h3>Explore Designers</h3>
+            <p>Browse portfolios, styles, and catalogs.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-icon">🤖</div>
+            <h3>Match with AI</h3>
+            <p>Upload an image and find designers with similar style.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-icon">💬</div>
+            <h3>Start Your Project</h3>
+            <p>Chat, receive proposals, and collaborate.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- FEATURED DESIGNERS -->
+<section class="featured fade-in">
+    <h2>Featured Designers</h2>
+
+    <div class="designer-grid">
+        <div class="designer-card" th:each="designer : ${designers}">
+
+            <img th:src="${designer.profileImageUrl}" class="designer-img">
+<!--            <img src="/css/images/Designer.png" class="designer-img">-->
+
+            <h3 th:text="${designer.name}"></h3>
+            <p th:text="${designer.visualField}"></p>
+
+            <a th:href="@{/designer/{id}(id=${designer.id})}" class="btn-small">View Profile</a>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- AI MATCHING -->
+<section class="ai-section fade-in">
+    <h2>AI Style Matching</h2>
+    <p>Find designers who match your style — instantly.</p>
+
+    <form action="/ai/match" method="post" class="ai-form">
+        <input type="text" name="imageUrl" placeholder="Paste image URL">
+        <button type="submit" class="btn-primary">Analyze with AI</button>
+    </form>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 Tasmeem Hub — Design Marketplace</p>
+</footer>
+
+</body>
+</html>

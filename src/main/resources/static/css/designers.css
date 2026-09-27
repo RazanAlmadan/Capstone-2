@@ -1,0 +1,171 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(180deg, #ffffff 0%, #f4f6ff 40%, #fff0e0 100%);
+    color: #0D1B2A;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 40px;
+}
+
+.header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.header p {
+    font-size: 18px;
+    color: #555;
+}
+
+/* DESIGNER GRID */
+.designer-list {
+    padding: 40px 60px;
+}
+
+.designer-grid {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.designer-card {
+    width: 250px;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.designer-img {
+    width: 100%;
+    height: 180px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.btn-small {
+    background: #007BFF;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* ANIMATION */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+.search-bar {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.search-bar input {
+    width: 300px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    font-size: 16px;
+}
+
+.search-bar button {
+    padding: 12px 20px;
+    margin-left: 10px;
+    border-radius: 8px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.category-bar {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.category-bar select {
+    padding: 12px;
+    width: 250px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    font-size: 16px;
+}
+
+.category-bar button {
+    padding: 12px 20px;
+    margin-left: 10px;
+    border-radius: 8px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.rating-bar {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.rating-bar button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: #FF9800;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.filter-bar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px auto 40px auto;
+    flex-wrap: wrap;
+}
+
+.filter-bar form {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-bar input,
+.filter-bar select {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    font-size: 15px;
+}
+
+.filter-bar button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.filter-bar button:hover {
+    background: #0056c7;
+}

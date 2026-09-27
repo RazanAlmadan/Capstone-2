@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Designers</title>
+    <link rel="stylesheet" href="/css/designers.css">
+</head>
+
+<body>
+
+<header class="header fade-in">
+    <h1>Find Your Designer</h1>
+    <p>Browse talented designers and explore their creative styles.</p>
+</header>
+
+<section class="designer-list fade-in">
+
+    <div class="filter-bar">
+
+        <form class="category-bar" action="/designers/search" method="get">
+            <input type="text" name="keyword" placeholder="Search designers..." th:value="${keyword}">
+            <button type="submit">Search</button>
+        </form>
+
+        <form class="category-bar">
+            <select id="categorySelect">
+                <option value="">Category</option>
+                <option value="Logo Design">Logo Design</option>
+                <option value="Interior Design">Interior Design</option>
+                <option value="Illustration">Illustration</option>
+                <option value="Motion Graphics">Motion Graphics</option>
+                <option value="UI/UX">UI/UX</option>
+                <option value="Social Media Design">Social Media Design</option>
+                <option value="3D Modeling">3D Modeling</option>
+            </select>
+
+            <button type="button" onclick="filterCategory()">Filter</button>
+            <button type="button" onclick="topRatedCategory()">Top Rated in Category</button>
+        </form>
+
+    </div>
+
+    <div class="designer-grid">
+        <div class="designer-card" th:each="designer : ${designers}">
+            <img th:src="${designer.profileImageUrl}" class="designer-img">
+            <h3 th:text="${designer.name}"></h3>
+            <p th:text="${designer.visualField}"></p>
+
+            <a th:href="@{/designer/{id}(id=${designer.id})}" class="btn-small">
+                View Profile
+            </a>
+        </div>
+    </div>
+
+</section>
+
+<script>
+    function filterCategory() {
+        const category = document.getElementById("categorySelect").value;
+        window.location.href = "/designers/category?category=" + category;
+    }
+
+    function topRatedCategory() {
+        const category = document.getElementById("categorySelect").value;
+        window.location.href = "/designers/rating/category?category=" + category;
+    }
+</script>
+
+</body>
+</html>
