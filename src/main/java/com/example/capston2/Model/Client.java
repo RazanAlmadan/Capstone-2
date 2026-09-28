@@ -23,7 +23,7 @@ public class Client {
 
     @NotEmpty(message = "Email cannot be empty")
     @Email(message = "Email must be a valid email address")
-    @Column(columnDefinition = "varchar(255) not null unique")
+    @Column(columnDefinition = "varchar(255) not null")
     private String email;
 
     @NotEmpty(message = "Password cannot be empty")

@@ -25,5 +25,6 @@ public interface DesignerRepository extends JpaRepository<Designer, Integer> {
             "LOWER(d.visualField) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Designer> searchDesigners(@Param("keyword") String keyword);
 
+    Designer findDesignerByEmail(String email);
 
 }

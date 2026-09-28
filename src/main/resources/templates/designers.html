@@ -1,70 +1,27 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Designers</title>
-    <link rel="stylesheet" href="/css/designers.css">
-</head>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Designers · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"></head>
 <body>
-
-<header class="header fade-in">
-    <h1>Find Your Designer</h1>
-    <p>Browse talented designers and explore their creative styles.</p>
-</header>
-
-<section class="designer-list fade-in">
-
-    <div class="filter-bar">
-
-        <form class="category-bar" action="/designers/search" method="get">
-            <input type="text" name="keyword" placeholder="Search designers..." th:value="${keyword}">
-            <button type="submit">Search</button>
-        </form>
-
-        <form class="category-bar">
-            <select id="categorySelect">
-                <option value="">Category</option>
-                <option value="Logo Design">Logo Design</option>
-                <option value="Interior Design">Interior Design</option>
-                <option value="Illustration">Illustration</option>
-                <option value="Motion Graphics">Motion Graphics</option>
-                <option value="UI/UX">UI/UX</option>
-                <option value="Social Media Design">Social Media Design</option>
-                <option value="3D Modeling">3D Modeling</option>
-            </select>
-
-            <button type="button" onclick="filterCategory()">Filter</button>
-            <button type="button" onclick="topRatedCategory()">Top Rated in Category</button>
-        </form>
-
-    </div>
-
-    <div class="designer-grid">
-        <div class="designer-card" th:each="designer : ${designers}">
-            <img th:src="${designer.profileImageUrl}" class="designer-img">
-            <h3 th:text="${designer.name}"></h3>
-            <p th:text="${designer.visualField}"></p>
-
-            <a th:href="@{/designer/{id}(id=${designer.id})}" class="btn-small">
-                View Profile
-            </a>
+<nav class="site-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-links"><a href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a><a href="/about">About</a></div><div class="nav-actions"><a class="btn-outline btn-sm" href="/login">Login</a><a class="btn-primary btn-sm" href="/signup">Join</a></div></nav>
+<main class="page section">
+    <div class="section-head"><div><div class="kicker">Directory</div><h2>Find your designer</h2><p>Search by name or browse a visual field.</p></div></div>
+    <div class="card pad" style="margin-bottom:22px">
+        <div class="filters">
+            <div class="search-wrap"><form action="/designers/search" method="get"><input class="search-control" name="keyword" placeholder="Search designers or skills..." th:value="${keyword}"></form></div>
+            <div class="select-wrap"><select id="categorySelect" class="search-control"><option value="">All categories</option><option>Logo Design</option><option>Interior Design</option><option>Illustration</option><option>Motion Graphics</option><option>UI/UX</option><option>Social Media Design</option><option>3D Modeling</option></select></div>
+            <button class="btn-primary" type="button" onclick="filterCategory()">Filter</button><button class="btn-ghost" type="button" onclick="ratingFilter()">Top rated</button>
         </div>
     </div>
-
-</section>
-
+    <div class="grid-4">
+        <article class="card designer-card" th:each="designer : ${designers}">
+            <img th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/Designer.png'}" alt="Designer">
+            <div class="content"><h3 th:text="${designer.name}">Designer</h3><p class="meta" th:text="${designer.visualField}">Visual field</p><p class="muted" th:text="${designer.bio != null and !#strings.isEmpty(designer.bio) ? designer.bio : 'Creative professional ready for new projects.'}"></p><div class="actions"><span class="rating" th:text="${designer.averageRating != null ? '★ ' + designer.averageRating + ' (' + designer.ratingCount + ')' : 'New'}"></span><a class="btn-primary btn-sm" th:href="@{/designer/{id}(id=${designer.id})}">View profile</a></div></div>
+        </article>
+    </div>
+    <div class="empty" th:if="${#lists.isEmpty(designers)}">No designers match this search yet.</div>
+</main>
 <script>
-    function filterCategory() {
-        const category = document.getElementById("categorySelect").value;
-        window.location.href = "/designers/category?category=" + category;
-    }
-
-    function topRatedCategory() {
-        const category = document.getElementById("categorySelect").value;
-        window.location.href = "/designers/rating/category?category=" + category;
-    }
+function filterCategory(){const c=document.getElementById('categorySelect').value;if(c) location.href='/designers/category?category='+encodeURIComponent(c);}
+function ratingFilter(){const c=document.getElementById('categorySelect').value;location.href=c?'/designers/rating/category?category='+encodeURIComponent(c):'/designers/rating';}
 </script>
-
-</body>
-</html>
+</body></html>

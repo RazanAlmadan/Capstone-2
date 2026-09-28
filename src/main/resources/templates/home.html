@@ -1,117 +1,56 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasmeem Hub</title>
-    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/app.css">
 </head>
-
 <body>
-
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="logo">
-        <img src="/css/images/logo.png" alt="Tasmeem Hub Logo">
-        <span>Tasmeem Hub</span>
+<nav class="site-nav">
+    <a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a>
+    <div class="nav-links">
+        <a href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a><a href="/about">About</a>
     </div>
-
-    <ul class="nav-links">
-        <li><a href="/designers">Designers</a></li>
-        <li><a href="/catalogs">Catalogs</a></li>
-        <li><a href="/ai">AI Matching</a></li>
-        <li><a href="/about">About</a></li>
-    </ul>
-
-    <div class="nav-buttons">
-        <a href="/login" class="btn-outline">Login</a>
-        <a href="/register" class="btn-primary">Join</a>
+    <div class="nav-actions">
+        <a class="btn-outline btn-sm" href="/login">Login</a><a class="btn-primary btn-sm" href="/signup">Join</a>
     </div>
 </nav>
 
-
-<!-- HERO SECTION -->
-<section class="hero fade-in">
-    <div class="hero-left">
-        <h1>Transform your ideas into stunning designs</h1>
-        <p>Saudi Arabia’s modern marketplace connecting clients with talented designers.</p>
-
-        <div class="hero-buttons">
-            <a href="/designers" class="btn-primary">Find Designers</a>
-            <a href="/register-designer" class="btn-outline">Become a Designer</a>
+<main>
+    <section class="hero">
+        <div class="page hero-grid">
+            <div>
+                <div class="kicker">Saudi design marketplace</div>
+                <h1>Turn a good idea into a great design.</h1>
+                <p>Tasmeem Hub connects clients with designers, from first request to chat, proposal, payment, and final project delivery.</p>
+                <div class="hero-actions"><a class="btn-primary" href="/designers">Find a designer</a><a class="btn-outline" href="/signup">Create an account</a></div>
+            </div>
+            <div class="hero-card">
+                <img src="/css/images/logo.png" alt="Designer workspace">
+                <div class="hero-card-caption"><strong>Creative work, one place</strong><span class="muted">Browse • Chat • Create</span></div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <div class="hero-right">
-        <div class="mockup-card">
-            <div class="mockup-img"></div>
-            <p class="mockup-text">Explore creative portfolios</p>
+    <section class="section"><div class="page">
+        <div class="section-head"><div><div class="kicker">Simple workflow</div><h2>Everything you need to start</h2></div></div>
+        <div class="grid-3">
+            <div class="card pad step-card"><div class="icon">🎨</div><h3>Explore</h3><p>Search designers by name, category, or rating and open their portfolios.</p></div>
+            <div class="card pad step-card"><div class="icon">💬</div><h3>Collaborate</h3><p>Send a project request, open a chat, and receive a proposal.</p></div>
+            <div class="card pad step-card"><div class="icon">✅</div><h3>Finish</h3><p>Accept the proposal, follow the project, pay the bill, and rate the result.</p></div>
         </div>
-    </div>
-</section>
+    </div></section>
 
-
-<!-- HOW IT WORKS -->
-<section class="how-it-works fade-in">
-    <h2>How It Works</h2>
-
-    <div class="steps">
-        <div class="step">
-            <div class="step-icon">🎨</div>
-            <h3>Explore Designers</h3>
-            <p>Browse portfolios, styles, and catalogs.</p>
+    <section class="section" style="padding-top:0"><div class="page">
+        <div class="section-head"><div><div class="kicker">Featured</div><h2>Designers</h2></div><a class="btn-ghost btn-sm" href="/designers">View all</a></div>
+        <div class="grid-4">
+            <article class="card designer-card" th:each="designer,iter : ${designers}" th:if="${iter.index < 4}">
+                <img th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/logo.png'}" alt="Designer">
+                <div class="content"><h3 th:text="${designer.name}">Designer</h3><p class="meta" th:text="${designer.visualField}">Visual field</p><div class="actions"><span class="rating" th:text="${designer.averageRating != null ? '★ ' + designer.averageRating : 'New'}"></span><a class="btn-primary btn-sm" th:href="@{/designer/{id}(id=${designer.id})}">Profile</a></div></div>
+            </article>
         </div>
-
-        <div class="step">
-            <div class="step-icon">🤖</div>
-            <h3>Match with AI</h3>
-            <p>Upload an image and find designers with similar style.</p>
-        </div>
-
-        <div class="step">
-            <div class="step-icon">💬</div>
-            <h3>Start Your Project</h3>
-            <p>Chat, receive proposals, and collaborate.</p>
-        </div>
-    </div>
-</section>
-
-
-<!-- FEATURED DESIGNERS -->
-<section class="featured fade-in">
-    <h2>Featured Designers</h2>
-
-    <div class="designer-grid">
-        <div class="designer-card" th:each="designer : ${designers}">
-
-            <img th:src="${designer.profileImageUrl}" class="designer-img">
-<!--            <img src="/css/images/Designer.png" class="designer-img">-->
-
-            <h3 th:text="${designer.name}"></h3>
-            <p th:text="${designer.visualField}"></p>
-
-            <a th:href="@{/designer/{id}(id=${designer.id})}" class="btn-small">View Profile</a>
-        </div>
-    </div>
-</section>
-
-
-
-<!-- AI MATCHING -->
-<section class="ai-section fade-in">
-    <h2>AI Style Matching</h2>
-    <p>Find designers who match your style — instantly.</p>
-
-    <form action="/ai/match" method="post" class="ai-form">
-        <input type="text" name="imageUrl" placeholder="Paste image URL">
-        <button type="submit" class="btn-primary">Analyze with AI</button>
-    </form>
-</section>
-
-
-<!-- FOOTER -->
-<footer>
-    <p>© 2026 Tasmeem Hub — Design Marketplace</p>
-</footer>
-
+    </div></section>
+</main>
+<footer><div class="page">© 2026 Tasmeem Hub — Design Marketplace</div></footer>
 </body>
 </html>

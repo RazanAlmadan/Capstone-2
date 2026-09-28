@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"></head>
+<body>
+<nav class="site-nav">
+    <a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a>
+    <div class="nav-links"><a href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a></div>
+    <div class="nav-actions"><span class="muted" th:text="${session.userName}">User</span><a class="btn-outline btn-sm" href="/logout">Logout</a></div>
+</nav>
+
+<main class="page dashboard-wrap">
+    <header class="dashboard-header"><div><div class="kicker" th:text="${session.role == 'CLIENT' ? 'Client workspace' : 'Designer workspace'}">Workspace</div><h1>Hello, <span th:text="${session.userName}">User</span>.</h1><p th:text="${session.role == 'CLIENT' ? 'Manage your projects, requests, proposals, payments and conversations.' : 'Manage client requests, conversations and proposals.'}"></p></div><a class="btn-ghost" href="/designers">Browse marketplace</a></header>
+
+    <div class="summary-grid">
+        <div class="card summary"><span>Requests</span><strong id="summaryRequests">0</strong></div>
+        <div class="card summary"><span>Chats</span><strong id="summaryChats">0</strong></div>
+        <div class="card summary" th:if="${session.role == 'CLIENT'}"><span>Open proposals</span><strong id="summaryProposals">0</strong></div>
+        <div class="card summary" th:if="${session.role == 'CLIENT'}"><span>Active orders</span><strong id="summaryOrders">0</strong></div>
+        <div class="card summary" th:if="${session.role == 'DESIGNER'}"><span>Proposals</span><strong id="summaryProposals">0</strong></div>
+        <div class="card summary" th:if="${session.role == 'DESIGNER'}"><span>Portfolio</span><strong id="summaryCatalogs">0</strong></div>
+    </div>
+
+    <div class="dashboard-grid">
+        <aside class="card sidebar">
+            <button class="active" data-panel="overview">Overview</button>
+            <button data-panel="requests">Requests</button>
+            <button th:if="${session.role == 'CLIENT'}" data-panel="proposals">Proposals</button>
+            <button th:if="${session.role == 'CLIENT'}" data-panel="orders">Orders & payments</button>
+            <button th:if="${session.role == 'CLIENT'}" data-panel="projects">Projects</button>
+            <button data-panel="chat">Chat</button>
+            <button th:if="${session.role == 'DESIGNER'}" data-panel="proposals">Proposals</button>
+            <button th:if="${session.role == 'DESIGNER'}" data-panel="portfolio">Portfolio</button>
+            <button data-panel="account">Account</button>
+        </aside>
+
+        <section>
+            <div id="panel-overview" class="panel active">
+                <div class="card panel-card"><div class="section-head"><div><div class="kicker">At a glance</div><h2>Workspace overview</h2><p>Use the left menu to move through the workflow.</p></div></div><div id="overviewContent" class="item-list"></div></div>
+            </div>
+
+            <div id="panel-requests" class="panel"><div class="card panel-card"><div class="section-head"><div><div class="kicker">Requests</div><h2 id="requestsHeading">Project requests</h2><p>Keep track of the request conversation.</p></div></div><div id="requestsList" class="item-list"></div></div></div>
+
+            <div id="panel-proposals" class="panel"><div class="card panel-card"><div class="section-head"><div><div class="kicker">Proposals</div><h2>Project proposals</h2><p>Review prices, details and deadlines.</p></div></div><div id="proposalsList" class="item-list"></div></div></div>
+
+            <div id="panel-orders" class="panel"><div class="card panel-card"><div class="section-head"><div><div class="kicker">Orders</div><h2>Orders & payments</h2><p>Pay the current bill step and follow order progress.</p></div></div><div id="ordersList" class="item-list"></div></div></div>
+
+            <div id="panel-projects" class="panel"><div class="card panel-card"><div class="section-head"><div><div class="kicker">Projects</div><h2>Project delivery</h2><p>Approve or reject work waiting for your review.</p></div></div><div id="projectsList" class="item-list"></div></div></div>
+
+            <div id="panel-chat" class="panel"><div class="card panel-card"><div class="section-head"><div><div class="kicker">Messages</div><h2>Chat</h2><p>Choose a conversation and continue the project.</p></div></div><div class="chat-layout"><div id="chatRooms" class="chat-list"></div><div class="chat-panel"><div id="messages" class="messages"><div class="empty">Choose a chat to load messages.</div></div><div><div id="proposalComposer" style="display:none"></div><form id="messageForm" class="chat-compose"><input id="messageInput" autocomplete="off" placeholder="Write a message..." required><button class="btn-primary" type="submit">Send</button></form></div></div></div></div></div>
+
+            <div id="panel-portfolio" class="panel">
+                <div class="card panel-card">
+                    <div class="section-head">
+                        <div>
+                            <div class="kicker">Portfolio</div>
+                            <h2>Manage your catalogs</h2>
+                            <p>Create a catalog and add multiple project images using image URLs.</p>
+                        </div>
+                    </div>
+
+                    <div class="catalog-manager-grid">
+                        <div class="catalog-create card pad">
+                            <h3 style="margin-top:0">Add a new catalog</h3>
+                            <form id="catalogForm" class="form-grid">
+                                <label>
+                                    Catalog name
+                                    <input id="catalogName" maxlength="50" minlength="4" required placeholder="e.g. Modern Living Room">
+                                </label>
+                                <label>
+                                    Images
+                                    <textarea id="catalogImages" required placeholder="Paste one public image URL per line&#10;https://example.com/image-1.jpg&#10;https://example.com/image-2.jpg"></textarea>
+                                </label>
+                                <div class="form-note">Use public image URLs. Add one URL per line. The first image is also used by the existing AI style analysis.</div>
+                                <div id="catalogPreview" class="image-preview-grid"></div>
+                                <button class="btn-primary" type="submit">Add catalog</button>
+                            </form>
+                        </div>
+
+                        <div>
+                            <h3 style="margin-top:0">Your catalogs</h3>
+                            <div id="designerCatalogs" class="designer-catalog-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-account" class="panel"><div class="card panel-card"><div class="section-head"><div><div class="kicker">Account</div><h2>Your account</h2><p>Basic session details for this demo application.</p></div></div><div class="item-list"><div class="list-item"><div class="list-top"><span class="list-title" th:text="${session.userName}">User</span><span class="badge" th:text="${session.role}">ROLE</span></div><div class="muted">User ID: <span th:text="${session.userId}">0</span></div><div class="actions"><a class="btn-outline btn-sm" href="/logout">Sign out</a></div></div></div></div></div>
+        </section>
+    </div>
+</main>
+<script src="/js/app.js"></script>
+<script th:inline="javascript">
+const role = /*[[${session.role}]]*/ 'CLIENT';
+const userId = Number(/*[[${session.userId}]]*/ 0);
+const userName = /*[[${session.userName}]]*/ 'User';
+let state = {requests:[], chats:[], proposals:[], orders:[], bills:[], projects:[], catalogs:[], selectedChat:null};
+
+const panelButtons = document.querySelectorAll('.sidebar button[data-panel]');
+panelButtons.forEach(btn => btn.addEventListener('click', () => {
+    panelButtons.forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+    if(btn.dataset.panel==='chat' && state.selectedChat) loadMessages(state.selectedChat);
+    if(btn.dataset.panel==='portfolio' && role==='DESIGNER') renderCatalogs();
+}));
+
+function listEmpty(text){return '<div class="empty">'+escapeHtml(text)+'</div>';}
+function designerMap(){
+    const map = new Map();
+    state.chats.forEach(c => map.set(c.id, c));
+    return map;
+}
+function relatedProposal(proposal){ return state.chats.find(c=>c.id===proposal.chatRoomId); }
+
+async function loadData(){
+    try {
+        const [requests, chats, proposals, catalogs] = await Promise.all([
+            api('/api/v1/request/get').catch(()=>[]),
+            api('/api/v1/chatroom/get').catch(()=>[]),
+            api('/api/v1/proposal/get').catch(()=>[]),
+            api('/api/v1/catalog/get').catch(()=>[])
+        ]);
+        state.catalogs = role==='DESIGNER' ? catalogs.filter(x=>x.designerId===userId) : [];
+        state.requests = role==='DESIGNER' ? await api('/api/v1/designer/get/requests/'+userId).catch(()=>[]) : requests.filter(x=>x.clientId===userId);
+        state.chats = chats.filter(x=>role==='CLIENT' ? x.clientId===userId : x.designerId===userId);
+        state.proposals = proposals.filter(p=>state.chats.some(c=>c.id===p.chatRoomId));
+
+        if(role==='CLIENT'){
+            const [orders,bills,projects] = await Promise.all([api('/api/v1/order/get').catch(()=>[]),api('/api/v1/bill/get').catch(()=>[]),api('/api/v1/project/get').catch(()=>[])]);
+            state.orders=orders.filter(x=>x.clientId===userId);
+            const orderIds=new Set(state.orders.map(x=>x.id));
+            state.bills=bills.filter(x=>orderIds.has(x.orderId));
+            state.projects=projects.filter(x=>orderIds.has(x.orderId));
+        }
+        renderAll();
+    } catch(err) { toast(err.message); }
+}
+
+function renderAll(){
+    document.getElementById('summaryRequests').textContent=state.requests.length;
+    document.getElementById('summaryChats').textContent=state.chats.length;
+    document.getElementById('summaryProposals').textContent=state.proposals.length;
+    const catalogSummary=document.getElementById('summaryCatalogs'); if(catalogSummary) catalogSummary.textContent=state.catalogs.length;
+    if(role==='CLIENT') document.getElementById('summaryOrders').textContent=state.orders.length;
+    document.getElementById('overviewContent').innerHTML = role==='CLIENT' ?
+      '<div class="list-item"><div class="list-top"><span class="list-title">Keep your projects moving</span><span class="badge good">Client</span></div><div class="muted">Requests → chat → proposal → payment → project → rating.</div></div>'+
+      '<div class="list-item"><div class="list-top"><span class="list-title">Current activity</span><span class="badge">'+state.requests.length+' requests</span></div><div class="muted">'+state.proposals.length+' proposals and '+state.orders.length+' orders are linked to your account.</div></div>' :
+      '<div class="list-item"><div class="list-top"><span class="list-title">Manage incoming work</span><span class="badge good">Designer</span></div><div class="muted">Approve requests to open a chat, then use the chat panel to send a proposal.</div></div>'+
+      '<div class="list-item"><div class="list-top"><span class="list-title">Current activity</span><span class="badge">'+state.requests.length+' requests</span></div><div class="muted">You have '+state.chats.length+' active chat room(s) and '+state.proposals.length+' proposal(s).</div></div>';
+    renderRequests(); renderProposals(); renderOrders(); renderProjects(); renderChats();
+}
+
+function renderRequests(){
+    const out=document.getElementById('requestsList');
+    if(!state.requests.length){out.innerHTML=listEmpty('No requests yet.');return;}
+    out.innerHTML=state.requests.map(r=>'<div class="list-item"><div class="list-top"><div><div class="list-title">Request #'+r.id+'</div><div class="muted">'+escapeHtml(r.projectDetails)+'</div></div><span class="badge '+statusClass(r.status)+'">'+escapeHtml(r.status)+'</span></div><div class="muted">'+escapeHtml(r.requestTime||'')+'</div>'+ (role==='DESIGNER' && r.status==='On Hold' ? '<div class="actions"><button class="btn-success btn-sm" onclick="requestDecision('+r.id+',\'Accepted\')">Accept</button><button class="btn-danger btn-sm" onclick="requestDecision('+r.id+',\'Rejected\')">Reject</button></div>':'' ) +'</div>').join('');
+}
+
+function renderProposals(){
+    const out=document.getElementById('proposalsList'); if(!out)return;
+    if(!state.proposals.length){out.innerHTML=listEmpty('No proposals yet.');return;}
+    out.innerHTML=state.proposals.map(p=>{const c=relatedProposal(p);return '<div class="list-item"><div class="list-top"><div><div class="list-title">Proposal #'+p.id+'</div><div class="muted">Chat #'+p.chatRoomId+'</div></div><span class="badge '+statusClass(p.status)+'">'+escapeHtml(p.status)+'</span></div><div><strong>'+escapeHtml(p.price)+' SAR</strong> · Deadline '+escapeHtml(p.deadLine||'—')+'</div><div class="muted">'+escapeHtml(p.details)+'</div>'+(role==='CLIENT'&&p.status==='On Hold'?'<div class="actions"><button class="btn-success btn-sm" onclick="proposalDecision('+p.id+',\'Accepted\')">Accept proposal</button><button class="btn-danger btn-sm" onclick="proposalDecision('+p.id+',\'Rejected\')">Reject</button></div>':'')+(role==='DESIGNER'&&c?'<div class="actions"><button class="btn-ghost btn-sm" onclick="openChat('+c.id+')">Open chat</button></div>':'')+'</div>';}).join('');
+}
+
+function renderOrders(){
+    const out=document.getElementById('ordersList'); if(!out)return;
+    if(role!=='CLIENT'){out.innerHTML=listEmpty('Orders are managed from the client workspace.');return;}
+    if(!state.orders.length){out.innerHTML=listEmpty('No orders yet.');return;}
+    out.innerHTML=state.orders.map(o=>{const b=state.bills.find(x=>x.orderId===o.id);const pay=b && (b.statues==='Pay The Down Payment'||b.statues==='Pay The Full Payment');return '<div class="list-item"><div class="list-top"><div><div class="list-title">Order #'+o.id+'</div><div class="muted">Designer #'+o.designerId+' · Deadline '+escapeHtml(o.deadLine||'—')+'</div></div><span class="badge '+statusClass(o.status)+'">'+escapeHtml(o.status)+'</span></div><div><strong>'+escapeHtml(o.price)+' SAR</strong>'+(b?' · Bill '+b.id+' · '+escapeHtml(b.statues):'')+'</div><div class="actions">'+(pay?'<button class="btn-success btn-sm" onclick="payBill('+b.id+')">Pay current bill</button>':'')+(o.status==='Done'?'<button class="btn-outline btn-sm" onclick="rateOrder('+o.id+','+o.designerId+')">Rate designer</button>':'')+'</div></div>';}).join('');
+}
+
+function renderProjects(){
+    const out=document.getElementById('projectsList'); if(!out)return;
+    if(!state.projects.length){out.innerHTML=listEmpty('No projects yet.');return;}
+    out.innerHTML=state.projects.map(p=>'<div class="list-item"><div class="list-top"><div><div class="list-title">'+escapeHtml(p.name)+'</div><div class="muted">Order #'+p.orderId+'</div></div><span class="badge '+statusClass(p.status)+'">'+escapeHtml(p.status)+'</span></div><div class="muted">File: '+escapeHtml(p.attachmentFile)+'</div>'+(p.status==='Waiting For Approval'?'<div class="actions"><button class="btn-success btn-sm" onclick="projectDecision('+p.id+',\'Accepted\')">Accept project</button><button class="btn-danger btn-sm" onclick="projectDecision('+p.id+',\'Rejected\')">Reject</button></div>':'')+'</div>').join('');
+}
+
+function renderCatalogs(){
+    const out=document.getElementById('designerCatalogs');
+    if(!out) return;
+    if(!state.catalogs.length){out.innerHTML=listEmpty('You have not added any catalogs yet.');return;}
+    out.innerHTML=state.catalogs.map(c=>{
+        const images=Array.isArray(c.images)?c.images:[];
+        const thumbs=images.map(url=>'<img src="'+escapeHtml(url)+'" alt="Catalog image" onerror="this.style.display=\'none\'">').join('');
+        return '<div class="list-item catalog-manager-card">'+
+          '<div class="list-top"><div><div class="list-title">'+escapeHtml(c.name)+'</div><div class="muted">'+images.length+' image(s)'+(c.aiStyle?' · AI style analyzed':'')+'</div></div><span class="badge good">Catalog #'+c.id+'</span></div>'+
+          '<div class="image-preview-grid compact">'+thumbs+'</div>'+
+          '<div class="actions"><button class="btn-danger btn-sm" onclick="deleteCatalog('+c.id+')">Delete catalog</button></div>'+
+          '</div>';
+    }).join('');
+}
+
+async function addCatalog(e){
+    e.preventDefault();
+    const name=document.getElementById('catalogName').value.trim();
+    const urls=document.getElementById('catalogImages').value.split(/\n|,/).map(x=>x.trim()).filter(Boolean);
+    if(name.length<4){toast('Catalog name must be at least 4 characters.');return;}
+    if(!urls.length){toast('Add at least one image URL.');return;}
+    try{
+        await api('/api/v1/catalog/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({designerId:userId,name,images:urls})});
+        document.getElementById('catalogForm').reset();
+        document.getElementById('catalogPreview').innerHTML='';
+        toast('Catalog added successfully.');
+        openPortfolioPanel();
+    }catch(err){toast(err.message);}
+}
+
+async function deleteCatalog(id){
+    if(!confirm('Delete this catalog?')) return;
+    try{await api('/api/v1/catalog/delete/'+id,{method:'DELETE'});toast('Catalog deleted.');await loadData();openPortfolioPanel();}
+    catch(err){toast(err.message);}
+}
+
+function previewCatalogImages(){
+    const out=document.getElementById('catalogPreview'); if(!out)return;
+    const urls=document.getElementById('catalogImages').value.split(/\n|,/).map(x=>x.trim()).filter(Boolean).slice(0,12);
+    out.innerHTML=urls.map(url=>'<img src="'+escapeHtml(url)+'" alt="Preview" onerror="this.style.opacity=.25">').join('');
+}
+
+function openPortfolioPanel(){
+    const btn=document.querySelector('.sidebar button[data-panel="portfolio"]');
+    const panel=document.getElementById('panel-portfolio');
+    if(!btn||!panel)return;
+    document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));panel.classList.add('active');
+    renderCatalogs();
+}
+
+function renderChats(){
+    const list=document.getElementById('chatRooms'); if(!state.chats.length){list.innerHTML='<div class="empty">No chats yet.</div>';return;}
+    list.innerHTML=state.chats.map(c=>'<button class="'+(state.selectedChat===c.id?'active':'')+'" onclick="openChat('+c.id+')">Chat #'+c.id+'<br><span class="muted">'+(role==='CLIENT'?'Designer #'+c.designerId:'Client #'+c.clientId)+'</span></button>').join('');
+}
+
+async function openChat(id){state.selectedChat=id;renderChats();await loadMessages(id);}
+async function loadMessages(id){const out=document.getElementById('messages');out.innerHTML='<div class="empty">Loading messages…</div>';try{const messages=await api('/api/v1/chatroom/get/messages/'+id);out.innerHTML=messages.map(m=>'<div class="message '+(m.senderId===userId?'mine':'')+'"><strong>'+escapeHtml(m.senderName)+'</strong><div>'+escapeHtml(m.content)+'</div><small>'+escapeHtml(m.timeStamp||'')+(m.attachmentUrl?' · attachment':'')+'</small></div>').join('')||listEmpty('No messages yet.');out.scrollTop=out.scrollHeight; if(role==='DESIGNER')renderProposalComposer(id);}catch(err){out.innerHTML=listEmpty(err.message);if(role==='DESIGNER')renderProposalComposer(id);}}
+function renderProposalComposer(id){const holder=document.getElementById('proposalComposer');const c=state.chats.find(x=>x.id===id);if(!holder)return;holder.style.display='block';holder.innerHTML='<div class="card pad" style="margin:0;border-width:1px 0 0;border-radius:0"><form class="form-grid" onsubmit="sendProposal(event,'+id+','+c.clientId+')"><div class="kicker">Designer tools</div><div class="form-grid two"><input id="proposalPrice" type="number" min="1" step="0.01" placeholder="Price (SAR)" required><input id="proposalDeadline" type="date" required></div><textarea id="proposalDetails" placeholder="Proposal details" required></textarea><button class="btn-primary" type="submit">Send proposal</button></form></div>';}
+
+async function sendMessage(e){e.preventDefault();if(!state.selectedChat)return;const content=document.getElementById('messageInput').value.trim();if(!content)return;const base=role==='CLIENT'?'/api/v1/client/send/message/':'/api/v1/designer/send/message/';try{await api(base+encodeURIComponent(content)+'/'+state.selectedChat,{method:'POST'});document.getElementById('messageInput').value='';await loadMessages(state.selectedChat);}catch(err){toast(err.message);}}
+document.getElementById('messageForm').addEventListener('submit',sendMessage);
+
+async function requestDecision(requestId,status){try{await api('/api/v1/designer/approve/reject/request/'+userId+'/'+requestId+'/'+status,{method:'POST'});await loadData();}catch(err){toast(err.message);}}
+async function proposalDecision(proposalId,status){try{await api('/api/v1/client/accept/or/reject/proposal/'+userId+'/'+proposalId+'/'+status,{method:'POST'});await loadData();}catch(err){toast(err.message);}}
+async function payBill(billId){try{await api('/api/v1/client/pay/bill/'+userId+'/'+billId,{method:'PUT'});await loadData();}catch(err){toast(err.message);}}
+async function projectDecision(projectId,status){try{await api('/api/v1/client/accept/reject/project/'+userId+'/'+projectId+'/'+status,{method:'PUT'});await loadData();}catch(err){toast(err.message);}}
+async function rateOrder(orderId,designerId){const rate=Number(prompt('Rate this designer from 1 to 5:'));if(!Number.isInteger(rate)||rate<1||rate>5)return;const comment=prompt('Optional comment:')||'';try{await api('/api/v1/rating/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({clientId:userId,designerId,orderId,rate,comment,timeStamp:new Date().toISOString().slice(0,10)})});toast('Rating added.');}catch(err){toast(err.message);}}
+async function sendProposal(e,chatRoomId,clientId){e.preventDefault();const price=Number(document.getElementById('proposalPrice').value);const details=document.getElementById('proposalDetails').value.trim();const deadLine=document.getElementById('proposalDeadline').value;try{await api('/api/v1/designer/designer/send-proposal?designerId='+userId+'&clientId='+clientId+'&chatRoomId='+chatRoomId+'&price='+encodeURIComponent(price)+'&details='+encodeURIComponent(details)+'&deadLine='+encodeURIComponent(deadLine),{method:'POST'});toast('Proposal sent.');await loadData();openChat(chatRoomId);}catch(err){toast(err.message);}}
+
+document.getElementById('catalogForm')?.addEventListener('submit', addCatalog);
+document.getElementById('catalogImages')?.addEventListener('input', previewCatalogImages);
+
+loadData();
+</script>
+</body></html>

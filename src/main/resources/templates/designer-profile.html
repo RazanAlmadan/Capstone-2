@@ -1,73 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${designer.name}">Designer Profile</title>
-    <link rel="stylesheet" href="/css/designer-profile.css">
-</head>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title th:text="${designer.name} + ' · Tasmeem Hub'">Designer</title><link rel="stylesheet" href="/css/app.css"></head>
 <body>
-
-<header class="header">
-    <h1 th:text="${designer.name}"></h1>
-    <p th:text="${designer.visualField}"></p>
-</header>
-
-<section class="profile-section fade-in">
-
-    <img th:src="${designer.profileImageUrl}" class="profile-img">
-
-    <div class="profile-info">
-        <h2>About</h2>
-        <p th:text="${designer.bio}"></p>
-
-        <button class="hire-btn" onclick="toggleRequestBox()">Hire Designer</button>
-
-        <div id="requestBox" class="request-box" style="display:none;">
-            <h3>Send a Project Request</h3>
-
-            <form th:action="@{/api/v1/client/send-request/{id}(id=${designer.id})}"
-                  method="post"
-                  onsubmit="sendRequest(event)">
-                <input type="hidden" name="clientId" value="1">
-                <textarea name="projectDetails" placeholder="Describe your project..." required></textarea>
-                <button type="submit" class="btn-primary">Send Request</button>
-            </form>
-        </div>
-
-    </div>
-
-</section>
-
-<section class="catalog-section fade-in">
-    <h2>Catalog</h2>
-
-    <div class="catalog-grid">
-        <div class="catalog-card" th:each="catalog : ${catalogs}">
-            <img th:src="${catalog.images[0]}" class="catalog-img">
+<nav class="site-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-links"><a href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a><a href="/about">About</a></div><div class="nav-actions"><a class="btn-outline btn-sm" href="/login">Login</a><a class="btn-primary btn-sm" href="/signup">Join</a></div></nav>
+<main class="page section">
+    <div class="profile">
+        <div><img class="profile-image" th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/Designer.png'}" alt="Designer profile"></div>
+        <div class="profile-side">
+            <div><div class="kicker" th:text="${designer.visualField}">Visual field</div><h1 th:text="${designer.name}">Designer</h1><p class="muted" th:text="${designer.bio != null and !#strings.isEmpty(designer.bio) ? designer.bio : 'Creative professional ready for new projects.'}"></p></div>
+            <div class="stat-row"><div class="stat"><strong th:text="${designer.averageRating != null ? designer.averageRating : '—'}">—</strong><span>Rating</span></div><div class="stat"><strong th:text="${designer.ratingCount != null ? designer.ratingCount : 0}">0</strong><span>Reviews</span></div><div class="stat"><strong th:text="${catalogs != null ? catalogs.size() : 0}">0</strong><span>Catalogs</span></div></div>
+            <div class="card pad">
+                <h3 style="margin-top:0">Start a project</h3>
+                <p class="muted">Send a short project brief and the designer can accept or reject the request.</p>
+                <div th:if="${session.userId == null}" class="alert">Log in as a client to send a project request.</div>
+                <form th:if="${session.userId != null and session.role == 'CLIENT'}" id="requestForm">
+                    <textarea class="field" id="projectDetails" minlength="10" maxlength="500" required placeholder="Describe what you want to design..."></textarea>
+                    <button class="btn-primary" style="margin-top:10px" type="submit">Send request</button>
+                </form>
+            </div>
         </div>
     </div>
-</section>
 
-<script>
-    function sendRequest(event) {
-        event.preventDefault();
-        const form = event.target;
-
-        fetch(form.action, {
-            method: "POST",
-            body: new FormData(form)
-        })
-            .then(res => res.text())
-            .then(msg => alert(msg))
-            .catch(err => alert("Error sending request"));
-    }
-
-    function toggleRequestBox() {
-        const box = document.getElementById("requestBox");
-        box.style.display = box.style.display === "none" ? "block" : "none";
-    }
+    <section style="margin-top:42px"><div class="section-head"><div><div class="kicker">Portfolio</div><h2>Catalogs</h2></div></div>
+        <div class="catalog-grid">
+            <article class="card catalog-card" th:each="catalog : ${catalogs}" th:if="${catalog.images != null and !catalog.images.isEmpty()}">
+                <div class="catalog-image-grid">
+                    <img th:each="image : ${catalog.images}" th:src="${image}" alt="Catalog image">
+                </div>
+                <div class="content"><strong th:text="${catalog.name}">Catalog</strong><p class="muted" th:text="${catalog.aiStyle != null ? catalog.aiStyle : 'Creative portfolio'}">Style</p></div>
+            </article>
+        </div>
+        <div class="empty" th:if="${#lists.isEmpty(catalogs)}">This designer has not added a catalog yet.</div>
+    </section>
+</main>
+<script th:inline="javascript">
+const designerId = /*[[${designer.id}]]*/ 0;
+const clientId = /*[[${session.userId}]]*/ null;
+const form = document.getElementById('requestForm');
+if(form){form.addEventListener('submit', async (e)=>{e.preventDefault();const details=document.getElementById('projectDetails').value.trim();if(details.length<10)return alert('Please write at least 10 characters.');const body=new URLSearchParams({clientId:String(clientId),projectDetails:details});const r=await fetch('/api/v1/client/send-request/'+designerId,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});const text=await r.text();alert(text);if(r.ok)form.reset();});}
 </script>
-
-</body>
-</html>
+</body></html>

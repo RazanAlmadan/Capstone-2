@@ -1,28 +1,28 @@
 package com.example.capston2.Controller;
 
 import com.example.capston2.Model.Catalog;
-import com.example.capston2.Model.Client;
 import com.example.capston2.Model.Designer;
 import com.example.capston2.Repository.CatalogRepository;
-import com.example.capston2.Repository.ClientRepository;
 import com.example.capston2.Repository.DesignerRepository;
 import com.example.capston2.Service.ClientService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Controller
+@RequestMapping
 @RequiredArgsConstructor
 public class HomeController {
 
-    private  final DesignerRepository designerRepository;
+    private final DesignerRepository designerRepository;
     private final CatalogRepository catalogRepository;
     private final ClientService clientService;
-    private final ClientRepository clientRepository;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -33,12 +33,12 @@ public class HomeController {
     @GetMapping("/designer/{id}")
     public String designerProfile(@PathVariable Integer id, Model model) {
         Designer designer = designerRepository.findById(id).orElse(null);
+        if (designer == null) {
+            return "redirect:/designers";
+        }
         model.addAttribute("designer", designer);
-
-        // If designer has catalogs
         List<Catalog> catalogs = catalogRepository.findByDesignerId(id);
         model.addAttribute("catalogs", catalogs);
-
         return "designer-profile";
     }
 
@@ -58,46 +58,22 @@ public class HomeController {
 
     @GetMapping("/designers/category")
     public String searchByCategory(@RequestParam String category, Model model) {
-
-        List<Designer> results = clientService.searchByCategory(category);
-
-        model.addAttribute("designers", results);
+        model.addAttribute("designers", clientService.searchByCategory(category));
         model.addAttribute("selectedCategory", category);
-
         return "designers";
     }
 
     @GetMapping("/designers/rating")
     public String getDesignersByRating(Model model) {
-        List<Designer> designers = clientService.getDesignersOrderByRating();
-        model.addAttribute("designers", designers);
+        model.addAttribute("designers", clientService.getDesignersOrderByRating());
         model.addAttribute("selectedCategory", null);
         return "designers";
     }
 
     @GetMapping("/designers/rating/category")
     public String getDesignersByRatingAndCategory(@RequestParam String category, Model model) {
-        List<Designer> designers = clientService.getDesignersOrderByRatingAndCategory(category);
-        model.addAttribute("designers", designers);
+        model.addAttribute("designers", clientService.getDesignersOrderByRatingAndCategory(category));
         model.addAttribute("selectedCategory", category);
         return "designers";
     }
-
-    @PostMapping("/login")
-    public String login(@RequestParam String email,
-                        @RequestParam String password,
-                        HttpSession session) {
-
-        Client client = clientRepository.findClientByEmail(email);
-        session.setAttribute("clientId", client.getId());
-        return "redirect:/";
-    }
-
-
-
-
-
-
-
-
 }
