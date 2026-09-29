@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+////// This Controller is for Front-End
+
+
 @Controller
 @RequiredArgsConstructor
 public class AuthController {

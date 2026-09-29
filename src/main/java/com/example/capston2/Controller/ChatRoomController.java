@@ -26,46 +26,26 @@ public class ChatRoomController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addChatRoom(@RequestBody @Valid ChatRoom chatRoom, Errors errors){
-        if (errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> addChatRoom(@RequestBody @Valid ChatRoom chatRoom){
         chatRoomService.addChatRoom(chatRoom);
         return ResponseEntity.status(200).body(new ApiResponse("ChatRoom was added"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateChatRoom(@PathVariable Integer id, @RequestBody @Valid ChatRoom chatRoom, Errors errors){
-        if (errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
-        Boolean results = chatRoomService.updateChatRoom(id, chatRoom);
-        if (!results){
-            return ResponseEntity.status(400).body(new ApiResponse("ID was not found"));
-        }
+    public ResponseEntity<?> updateChatRoom(@PathVariable Integer id, @RequestBody @Valid ChatRoom chatRoom){
+        chatRoomService.updateChatRoom(id, chatRoom);
         return ResponseEntity.status(200).body(new ApiResponse("ChatRoom was updated"));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteChatRoom(@PathVariable Integer id){
-        Boolean results = chatRoomService.deleteChatRoom(id);
-        if (!results){
-            return ResponseEntity.status(400).body(new ApiResponse("ID was not found"));
-        }
+        chatRoomService.deleteChatRoom(id);
         return ResponseEntity.status(200).body(new ApiResponse("ChatRoom was deleted"));
     }
 
     @GetMapping("/get/messages/{chatRoomId}")
     public ResponseEntity<?> printMessages(@PathVariable Integer chatRoomId){
         List<Message> messages = chatRoomService.printMessages(chatRoomId);
-        if (messages.isEmpty()){
-            return ResponseEntity.status(400).body(new ApiResponse("No messages was found"));
-        }
-        if (chatRoomService.printMessages(chatRoomId) == null){
-            return  ResponseEntity.status(400).body(new ApiResponse("chatRoom Was not found"));
-        }
         return ResponseEntity.status(200).body(messages);
     }
 }

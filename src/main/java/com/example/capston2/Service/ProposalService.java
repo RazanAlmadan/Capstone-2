@@ -1,5 +1,6 @@
 package com.example.capston2.Service;
 
+import com.example.capston2.Api.ApiException;
 import com.example.capston2.Model.ChatRoom;
 import com.example.capston2.Model.Client;
 import com.example.capston2.Model.Designer;
@@ -26,27 +27,27 @@ public class ProposalService {
         return proposalRepository.findAll();
     }
 
-    public Integer addProposal(Integer designerId, Integer clientId, Proposal proposal){
+    public void addProposal(Integer designerId, Integer clientId, Proposal proposal){
         Client client = clientRepository.findClientById(clientId);
         if (client == null){
-            return 1;
+            throw new ApiException("client not found");
         }
         Designer designer = designerRepository.findDesignerById(designerId);
         if (designer == null){
-            return 2;
+            throw new ApiException("Designer not found");
         }
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(proposal.getChatRoomId());
         if (chatRoom == null){
-            return 3;
+            throw new ApiException("chat room not found");
         }
         if (!chatRoom.getClientId().equals(clientId)){
-            return 4;
+            throw new ApiException("client does not belong to the chatroom");
         }
         if (!chatRoom.getDesignerId().equals(designerId)){
-            return 5;
+            throw new ApiException("designer does not belong to the chatroom");
         }
         proposalRepository.save(proposal);
-        return 0;
+
     }
 
     public void addAIProposal(Integer chatRoomId, Double price, LocalDate deadline, String details) {
@@ -64,10 +65,13 @@ public class ProposalService {
 
 
 
-    public Integer updateProposal(Integer id, Proposal proposal){
+    public void updateProposal(Integer id, Proposal proposal){
         Proposal oldProposal = proposalRepository.findProposalById(id);
         if (oldProposal == null){
-            return -1;
+            throw new ApiException("proposal not found");
+        }
+        if (oldProposal.getStatus().equals("Accepted")){
+            throw new ApiException("proposal was accepted you can't update it");
         }
         if (oldProposal.getStatus().equals("On Hold") || oldProposal.getStatus().equals("rejected")) {
             oldProposal.setChatRoomId(proposal.getChatRoomId());
@@ -76,18 +80,16 @@ public class ProposalService {
             oldProposal.setDetails(proposal.getDetails());
             oldProposal.setStatus("On Hold");
             proposalRepository.save(oldProposal);
-            return 0;
+
         }
-        return 1;
     }
 
-    public Boolean deleteProposal(Integer id){
+    public void deleteProposal(Integer id){
         Proposal oldProposal = proposalRepository.findProposalById(id);
         if (oldProposal == null){
-            return false;
+            throw new ApiException("proposal was not found");
         }
         proposalRepository.delete(oldProposal);
-        return true;
     }
 
 }

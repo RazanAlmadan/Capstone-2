@@ -1,5 +1,7 @@
 package com.example.capston2.Service;
 
+import com.example.capston2.Api.ApiException;
+import com.example.capston2.Api.ApiResponse;
 import com.example.capston2.Model.*;
 import com.example.capston2.Notification.NotificationService;
 import com.example.capston2.Repository.*;
@@ -31,57 +33,58 @@ public class ClientService {
         clientRepository.save(client);
     }
 
-    public Boolean updateClient(Integer id, Client client){
+    public void updateClient(Integer id, Client client){
         Client oldClient = clientRepository.findClientById(id);
         if (oldClient == null){
-            return false;
+            throw new ApiException("client not found");
         }
         oldClient.setName(client.getName());
         oldClient.setEmail(client.getEmail());
         oldClient.setPassword(client.getPassword());
         clientRepository.save(oldClient);
-        return true;
     }
 
-    public Boolean deleteClient(Integer id){
+    public void deleteClient(Integer id){
         Client oldClient = clientRepository.findClientById(id);
         if (oldClient == null){
-            return false;
+            throw new ApiException("client not found");
         }
         clientRepository.delete(oldClient);
-        return true;
     }
 
     public Designer searchByName(String name){
         Designer designer = designerRepository.findDesignerByName(name);
         if (designer == null){
-            return null;
+            throw new ApiException("designer not found");
         }
         return designer;
     }
 
     public List<Designer> searchByCategory(String visualField){
         List<Designer> designers = designerRepository.findDesignerByVisualField(visualField);
+        if (designers.isEmpty()){
+            throw new ApiException("no designer for this category");
+        }
         return designers;
     }
 
-    public Integer acceptOrRejectProposal(Integer clientId, Integer proposalId, String status){
+    public Object acceptOrRejectProposal(Integer clientId, Integer proposalId, String status){
         Proposal proposal = proposalRepository.findProposalById(proposalId);
         if (proposal == null){
-            return -1;
+            throw new ApiException("proposal not found");
         }
         Client client = clientRepository.findClientById(clientId);
         if (client == null){
-            return 1;
+            throw new ApiException("client not found");
         }
         if (!status.equals("Accepted") && !status.equals("Rejected")){
-            return 2;
+            throw new ApiException("status can either be Accepted or Rejected");
         }
         if (proposal.getStatus().equals("Accepted")){
-            return 3;
+            throw new ApiException("proposal was already accepted");
         }
         if (proposal.getStatus().equals("Rejected")){
-            return 4;
+            throw new ApiException("proposal was already rejected");
         }
         if (proposal.getStatus().equals("On Hold")){
             proposal.setStatus(status);
@@ -104,27 +107,33 @@ public class ClientService {
             bill.setOrderId(order.getId());
             bill.setStatues("Pay The Down Payment");
             billRepository.save(bill);
-            return 0;
+            return "proposal have been Accepted! and a new bill was issued for down payment";
         }
         // if rejected
-        return 5;
+        return "proposal have been Rejected!";
     }
 
     public List<Designer> getDesignersOrderByRating(){
         List<Designer> designers = designerRepository.getBasedOnRating();
+        if (designers.isEmpty()){
+            throw new ApiException("no designer found");
+        }
         return designers;
     }
 
     public List<Designer> getDesignersOrderByRatingAndCategory(String category){
         List<Designer> designers = designerRepository.getBasedOnRatingAndCategory(category);
+        if (designers.isEmpty()){
+            throw new ApiException("no designer found");
+        }
         return designers;
     }
 
 
-    public Boolean sendAMessage(String content, Integer chatRoomId){
+    public void sendAMessage(String content, Integer chatRoomId){
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(chatRoomId);
         if (chatRoom == null){
-            return false;
+            throw new ApiException("chatroom not found");
         }
         Message message = new Message();
         message.setChatRoomId(chatRoomId);
@@ -134,14 +143,13 @@ public class ClientService {
         message.setContent(content);
         message.setSenderName(clientRepository.findClientById(chatRoom.getClientId()).getName());
         messageRepository.save(message);
-        return true;
     }
 
 
-    public Boolean sendAMessage(String content, String attachmentUrl, Integer chatRoomId){
+    public void sendAMessage(String content, String attachmentUrl, Integer chatRoomId){
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(chatRoomId);
         if (chatRoom == null){
-            return false;
+            throw new ApiException("chatroom not found");
         }
         Message message = new Message();
         message.setChatRoomId(chatRoomId);
@@ -152,57 +160,59 @@ public class ClientService {
         message.setContent(content);
         message.setSenderName(clientRepository.findClientById(chatRoom.getClientId()).getName());
         messageRepository.save(message);
-        return true;
+
     }
 
-    public Integer payTheBill(Integer clientId, Integer billId){
+    public Object payTheBill(Integer clientId, Integer billId){
         Bill bill = billRepository.findBillById(billId);
         if (bill == null){
-            return -1;
+            throw new ApiException("bill not found");
         }
         Client client = clientRepository.findClientById(clientId);
         if (client == null){
-            return -2;
+            throw new ApiException("client was not found");
         }
         Order order = orderRepository.findOrderById(bill.getOrderId());
         if (!order.getClientId().equals(clientId)){
-            return 0;
+            throw new ApiException("this bill cannot belong to the client");
         }
         if (bill.getStatues().equals("Pay The Down Payment")){
             order.setStatus("Work In Progress");
             bill.setStatues("Soon");
             orderRepository.save(order);
             billRepository.save(bill);
-            return 1;
+            return "Down Payment was paid, designer can start working on the project";
         }
         if (bill.getStatues().equals("Pay The Full Payment")){
             order.setStatus("Done");
             bill.setStatues("Paid");
             orderRepository.save(order);
             billRepository.save(bill);
-            return 2;
+            return "Full payment was paid";
         }
         if (bill.getStatues().equals("Soon")){
-            return 3;
+            throw new ApiException("Can't pay the bill now");
         }
-        // if project status is "Done"
-        return 4;
+        if (order.getStatus().equals("Done")){
+            throw new ApiException("Bill was already paid");
+        }
+        return null;
     }
 
-    public Integer acceptOrRejectProject(Integer clientId, Integer projectId, String status){
+    public Object acceptOrRejectProject(Integer clientId, Integer projectId, String status){
         Project project = projectRepository.findProjectById(projectId);
         if (project == null){
-            return -1;
+            throw new ApiException("project was not found");
         }
         Order order = orderRepository.findOrderById(project.getOrderId());
         if (!order.getClientId().equals(clientId)){
-            return 1;
+            throw new ApiException("order does not belong to the client");
         }
         if (!status.equals("Accepted") && !status.equals("Rejected")){
-            return 2;
+            throw new ApiException("status can only be Accepted or Rejected");
         }
         if (!project.getStatus().equals("Waiting For Approval")){
-            return 3;
+            throw new ApiException("project is not waiting for approval");
         }
         project.setStatus(status);
         projectRepository.save(project);
@@ -212,22 +222,22 @@ public class ClientService {
             Bill bill = billRepository.findBillByOrderId(order.getId());
             bill.setStatues("Pay The Full Payment");
             billRepository.save(bill);
-            return 0;
+            return "Project was accepted you can now pay the rest of the bill";
         }
         // if project rejected
-        return 4;
+        return "Project was rejected";
     }
 
-    public Integer sendRequest(Integer clientId, Integer designerId, String projectDetails) {
+    public void sendRequest(Integer clientId, Integer designerId, String projectDetails) {
 
         Client client = clientRepository.findClientById(clientId);
         if (client == null){
-            return 1;
+            throw new ApiException("client not found");
         }
 
         Designer designer = designerRepository.findDesignerById(designerId);
         if (designer == null){
-            return 2;
+            throw new ApiException("designer not found");
         }
 
         Request request = new Request();
@@ -246,7 +256,6 @@ public class ClientService {
                 designer.getName()
         );
 
-        return 0;
     }
 
 

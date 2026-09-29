@@ -30,8 +30,8 @@ public class Proposal {
     @NotEmpty
     @Column(columnDefinition = "text not null")
     private String details;
-    @NotEmpty
+
     @Column(columnDefinition = "varchar(50) not null")
     @Pattern(regexp = "^(On Hold|Accepted|Rejected)$")
-    private String status;
+    private String status = "On Hold";
 }

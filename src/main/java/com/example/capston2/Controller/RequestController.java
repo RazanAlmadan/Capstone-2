@@ -22,43 +22,20 @@ public class RequestController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addRequest(@RequestBody @Valid Request request, Errors errors){
-        if (errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
-        Integer results = requestService.addRequest(request);
-        if (results == 1){
-            return ResponseEntity.status(400).body(new ApiResponse("Client ID was not found"));
-        }
-        if (results == 2){
-            return ResponseEntity.status(400).body(new ApiResponse("Designer ID was not found"));
-        }
-        if (results == 3){
-            return ResponseEntity.status(200).body(new ApiResponse("Can't create a request with Accepted or Rejected status"));
-        }
+    public ResponseEntity<?> addRequest(@RequestBody @Valid Request request){
+        requestService.addRequest(request);
         return ResponseEntity.status(200).body(new ApiResponse("Request was added"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateRequest(@PathVariable Integer id, @RequestBody @Valid Request request, Errors errors){
-        if (errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
-        Boolean results = requestService.updateRequest(id, request);
-        if (!results){
-            return ResponseEntity.status(400).body(new ApiResponse("ID was not found"));
-        }
+    public ResponseEntity<?> updateRequest(@PathVariable Integer id, @RequestBody @Valid Request request){
+        requestService.updateRequest(id, request);
         return ResponseEntity.status(200).body(new ApiResponse("Request was updated"));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteRequest(@PathVariable Integer id){
-        Boolean results = requestService.deleteRequest(id);
-        if (!results){
-            return ResponseEntity.status(400).body(new ApiResponse("ID was not found"));
-        }
+        requestService.deleteRequest(id);
         return ResponseEntity.status(200).body(new ApiResponse("Request was deleted"));
     }
 }

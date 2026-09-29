@@ -1,5 +1,6 @@
 package com.example.capston2.Service;
 
+import com.example.capston2.Api.ApiException;
 import com.example.capston2.Model.Message;
 import com.example.capston2.Repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,10 @@ public class MessageService {
         messageRepository.save(message);
     }
 
-    public Boolean updateMessage(Integer id, Message message){
+    public void updateMessage(Integer id, Message message){
         Message oldMessage = messageRepository.findMessageById(id);
         if (oldMessage == null){
-            return false;
+            throw new ApiException("message not found");
         }
         oldMessage.setChatRoomId(message.getChatRoomId());
         oldMessage.setSenderId(message.getSenderId());
@@ -32,15 +33,13 @@ public class MessageService {
         oldMessage.setAttachmentUrl(message.getAttachmentUrl());
         oldMessage.setTimeStamp(message.getTimeStamp());
         messageRepository.save(oldMessage);
-        return true;
     }
 
-    public Boolean deleteMessage(Integer id){
+    public void deleteMessage(Integer id){
         Message oldMessage = messageRepository.findMessageById(id);
         if (oldMessage == null){
-            return false;
+           throw new ApiException("message not found");
         }
         messageRepository.delete(oldMessage);
-        return true;
     }
 }

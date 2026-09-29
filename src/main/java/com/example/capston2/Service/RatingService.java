@@ -1,5 +1,6 @@
 package com.example.capston2.Service;
 
+import com.example.capston2.Api.ApiException;
 import com.example.capston2.Model.Client;
 import com.example.capston2.Model.Designer;
 import com.example.capston2.Model.Order;
@@ -26,24 +27,24 @@ public class RatingService {
         return ratingRepository.findAll();
     }
 
-    public Integer addRating(Rating rating){
+    public void addRating(Rating rating){
         Client client = clientRepository.findClientById(rating.getClientId());
         if (client == null){
-            return -1;
+            throw new ApiException("client was not found");
         }
         Designer designer = designerRepository.findDesignerById(rating.getDesignerId());
         if (designer == null){
-            return -2;
+            throw new ApiException("designer was not found");
         }
         Order order = orderRepository.findOrderById(rating.getOrderId());
         if (order == null){
-            return -3;
+            throw new ApiException("order was not found");
         }
         if (!order.getStatus().equals("Done")){
-            return 1;
+            throw new ApiException("Order status is not Done");
         }
         if (!order.getClientId().equals(rating.getClientId()) && !order.getDesignerId().equals(rating.getDesignerId())){
-            return 2;
+            throw new ApiException("Order does not belong to client or designer");
         }
         rating.setTimeStamp(LocalDate.now());
         ratingRepository.save(rating);
@@ -52,7 +53,6 @@ public class RatingService {
         designer.setRatingCount(ratingRepository.findRatingByDesignerId(designer.getId()).size());
         designerRepository.save(designer);
 
-        return 0;
     }
 
     public Boolean updateRating(Integer id, Rating rating){
@@ -72,19 +72,19 @@ public class RatingService {
         return true;
     }
 
-    public Boolean deleteRating(Integer id){
+    public void deleteRating(Integer id){
         Rating oldRating = ratingRepository.findRatingById(id);
         if (oldRating == null){
-            return false;
+            throw new ApiException("rating was not found");
         }
         Designer designer = designerRepository.findDesignerById(oldRating.getDesignerId());
         ratingRepository.delete(oldRating);
         designer.setAverageRating(calculateAverageRating(designer.getId()));
         designer.setRatingCount(ratingRepository.findRatingByDesignerId(oldRating.getDesignerId()).size());
         designerRepository.save(designer);
-        return true;
     }
 
+    // this method is not in the controller
     public Double calculateAverageRating(Integer designerId){
         List<Rating> ratings = ratingRepository.findRatingByDesignerId(designerId);
         if (ratings.isEmpty()){

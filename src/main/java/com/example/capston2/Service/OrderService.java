@@ -1,5 +1,6 @@
 package com.example.capston2.Service;
 
+import com.example.capston2.Api.ApiException;
 import com.example.capston2.Model.Order;
 import com.example.capston2.Repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,10 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public Boolean updateOrder(Integer id, Order order){
+    public void updateOrder(Integer id, Order order){
         Order oldOrder = orderRepository.findOrderById(id);
         if (oldOrder == null){
-            return false;
+            throw new ApiException("order was not found");
         }
         oldOrder.setClientId(order.getClientId());
         oldOrder.setDesignerId(order.getDesignerId());
@@ -31,15 +32,13 @@ public class OrderService {
         oldOrder.setDeadLine(order.getDeadLine());
         oldOrder.setStatus(order.getStatus());
         orderRepository.save(oldOrder);
-        return true;
     }
 
-    public Boolean deleteOrder(Integer id){
+    public void deleteOrder(Integer id){
         Order oldOrder = orderRepository.findOrderById(id);
         if (oldOrder == null){
-            return false;
+            throw new ApiException("order not found");
         }
         orderRepository.delete(oldOrder);
-        return true;
     }
 }

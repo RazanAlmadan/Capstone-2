@@ -1,5 +1,6 @@
 package com.example.capston2.Service;
 
+import com.example.capston2.Api.ApiException;
 import com.example.capston2.Model.ChatRoom;
 import com.example.capston2.Model.Message;
 import com.example.capston2.Repository.ChatRoomRepository;
@@ -24,32 +25,33 @@ public class ChatRoomService {
         chatRoomRepository.save(chatRoom);
     }
 
-    public Boolean updateChatRoom(Integer id, ChatRoom chatRoom){
+    public void updateChatRoom(Integer id, ChatRoom chatRoom){
         ChatRoom oldChatRoom = chatRoomRepository.findChatRoomById(id);
         if (oldChatRoom == null){
-            return false;
+            throw new ApiException("chat room not found");
         }
         oldChatRoom.setRequestId(chatRoom.getRequestId());
         oldChatRoom.setCreatedAt(chatRoom.getCreatedAt());
         chatRoomRepository.save(oldChatRoom);
-        return true;
     }
 
-    public Boolean deleteChatRoom(Integer id){
+    public void deleteChatRoom(Integer id){
         ChatRoom oldChatRoom = chatRoomRepository.findChatRoomById(id);
         if (oldChatRoom == null){
-            return false;
+            throw new ApiException("chat room not found");
         }
         chatRoomRepository.delete(oldChatRoom);
-        return true;
     }
 
     public List<Message> printMessages(Integer chatRoomId){
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(chatRoomId);
         if (chatRoom == null){
-            return null;
+            throw new ApiException("chat room not found");
         }
         List<Message> messages = messageRepository.findMessageByChatRoomId(chatRoomId);
+        if (messages.isEmpty()){
+            throw new ApiException("No messages was found");
+        }
         return messages;
     }
 }

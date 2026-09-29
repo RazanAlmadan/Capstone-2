@@ -27,7 +27,7 @@
                 <div class="catalog-image-grid">
                     <img th:each="image : ${catalog.images}" th:src="${image}" alt="Catalog image">
                 </div>
-                <div class="content"><strong th:text="${catalog.name}">Catalog</strong><p class="muted" th:text="${catalog.aiStyle != null ? catalog.aiStyle : 'Creative portfolio'}">Style</p></div>
+                <div class="content"><strong th:text="${catalog.name}">Catalog</strong></div>
             </article>
         </div>
         <div class="empty" th:if="${#lists.isEmpty(catalogs)}">This designer has not added a catalog yet.</div>

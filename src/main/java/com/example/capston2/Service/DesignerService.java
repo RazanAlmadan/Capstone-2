@@ -1,5 +1,6 @@
 package com.example.capston2.Service;
 
+import com.example.capston2.Api.ApiException;
 import com.example.capston2.Model.*;
 import com.example.capston2.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,10 @@ public class DesignerService {
         designerRepository.save(designer);
     }
 
-    public Boolean updateDesigner(Integer id, Designer designer){
+    public void updateDesigner(Integer id, Designer designer){
         Designer oldDesigner = designerRepository.findDesignerById(id);
         if (oldDesigner == null){
-            return false;
+            throw new ApiException("designer not found");
         }
         oldDesigner.setName(designer.getName());
         oldDesigner.setEmail(designer.getEmail());
@@ -39,40 +40,42 @@ public class DesignerService {
         oldDesigner.setBio(designer.getBio());
         oldDesigner.setCatalogs(designer.getCatalogs());
         designerRepository.save(oldDesigner);
-        return true;
+
     }
 
-    public Boolean deleteDesigner(Integer id){
+    public void deleteDesigner(Integer id){
         Designer oldDesigner = designerRepository.findDesignerById(id);
         if (oldDesigner == null){
-            return false;
+            throw new ApiException("designer not found");
         }
         designerRepository.delete(oldDesigner);
-        return true;
     }
 
 
     public List<Request> getRequests(Integer id){
         List<Request> requests = requestRepository.findRequestByDesignerId(id);
+        if (requests.isEmpty()){
+            throw new ApiException("no request were found");
+        }
         return requests;
     }
 
-    public Integer approveOrRejectRequest(Integer id, Integer requestId, String status){
+    public Object approveOrRejectRequest(Integer id, Integer requestId, String status){
         Request request = requestRepository.findRequestById(requestId);
         if (request == null){
-            return -1;
+            throw new ApiException("request not found");
         }
         if (!request.getDesignerId().equals(id)){
-            return 1;
+            throw new ApiException("request does not belong to designer");
         }
         if (!status.equals("Accepted") && !status.equals("Rejected")){
-            return 2;
+            throw new ApiException("status must be either Accepted or Rejected");
         }
         if (request.getStatus().equals("Accepted")){
-            return 3;
+            throw new ApiException("Request was already accepted");
         }
         if (request.getStatus().equals("Rejected")){
-            return 4;
+            throw new ApiException("Request was already rejected");
         }
         if (request.getStatus().equals("On Hold")){
             request.setStatus(status);
@@ -85,16 +88,16 @@ public class DesignerService {
             chatRoom.setClientId(request.getClientId());
             chatRoom.setDesignerId(request.getDesignerId());
             chatRoomRepository.save(chatRoom);
-            return 0;
+            return "Request have been Accepted!";
         }
-        return 5;
+        return "Request have been Rejected!";
 
     }
 
-    public Boolean sendAMessage(String content, Integer chatRoomId){
+    public void sendAMessage(String content, Integer chatRoomId){
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(chatRoomId);
         if (chatRoom == null){
-            return false;
+            throw new ApiException("chatroom not found");
         }
         Message message = new Message();
         message.setChatRoomId(chatRoomId);
@@ -104,14 +107,14 @@ public class DesignerService {
         message.setContent(content);
         message.setSenderName(designerRepository.findDesignerById(chatRoom.getDesignerId()).getName());
         messageRepository.save(message);
-        return true;
+
     }
 
 
-    public Boolean sendAMessage(String content, String attachmentUrl, Integer chatRoomId){
+    public void sendAMessage(String content, String attachmentUrl, Integer chatRoomId){
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(chatRoomId);
         if (chatRoom == null){
-            return false;
+            throw new ApiException("chatroom not found");
         }
         Message message = new Message();
         message.setChatRoomId(chatRoomId);
@@ -122,11 +125,10 @@ public class DesignerService {
         message.setContent(content);
         message.setSenderName(designerRepository.findDesignerById(chatRoom.getDesignerId()).getName());
         messageRepository.save(message);
-        return true;
     }
 
 
-    public Integer sendProposal(Integer designerId,
+    public void sendProposal(Integer designerId,
                                 Integer clientId,
                                 Integer chatRoomId,
                                 Double price,
@@ -135,25 +137,25 @@ public class DesignerService {
 
         Client client = clientRepository.findClientById(clientId);
         if (client == null) {
-            return 1;
+            throw new ApiException("client not found");
         }
 
         Designer designer = designerRepository.findDesignerById(designerId);
         if (designer == null) {
-            return 2;
+            throw new ApiException("designer not found");
         }
 
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(chatRoomId);
         if (chatRoom == null) {
-            return 3;
+            throw new ApiException("chatroom not found");
         }
 
         if (!chatRoom.getClientId().equals(clientId)) {
-            return 4;
+            throw new ApiException("chatroom does not belong to client");
         }
 
         if (!chatRoom.getDesignerId().equals(designerId)) {
-            return 5;
+            throw new ApiException("chatroom does not belong to designer");
         }
 
         Proposal proposal = new Proposal();
@@ -165,7 +167,6 @@ public class DesignerService {
 
         proposalRepository.save(proposal);
 
-        return 0;
     }
 
 

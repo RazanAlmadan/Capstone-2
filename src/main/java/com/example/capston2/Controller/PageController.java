@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/// This Controller is for Front-End
+
 @Controller
 @RequiredArgsConstructor
 public class PageController {

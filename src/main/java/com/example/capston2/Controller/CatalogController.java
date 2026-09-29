@@ -22,38 +22,20 @@ public class CatalogController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addCatalog(@RequestBody @Valid Catalog catalog, Errors errors){
-        if (errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
-        try {
+    public ResponseEntity<?> addCatalog(@RequestBody @Valid Catalog catalog){
             catalogService.addCatalog(catalog);
             return ResponseEntity.status(200).body(new ApiResponse("Catalog was added"));
-        } catch (Exception e){
-            return ResponseEntity.status(500).body("AI Error: " + e.getMessage());
-        }
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateCatalog(@PathVariable Integer id, @RequestBody @Valid Catalog catalog, Errors errors){
-        if (errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
-            Boolean results = catalogService.updateCatalog(id, catalog);
-            if (!results) {
-                return ResponseEntity.status(400).body(new ApiResponse("ID was not found"));
-            }
+    public ResponseEntity<?> updateCatalog(@PathVariable Integer id, @RequestBody @Valid Catalog catalog){
+            catalogService.updateCatalog(id, catalog);
             return ResponseEntity.status(200).body(new ApiResponse("Catalog was updated"));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteCatalog(@PathVariable Integer id){
-        Boolean results = catalogService.deleteCatalog(id);
-        if (!results){
-            return ResponseEntity.status(400).body(new ApiResponse("ID was not found"));
-        }
+        catalogService.deleteCatalog(id);
         return ResponseEntity.status(200).body(new ApiResponse("Catalog was deleted"));
     }
 }

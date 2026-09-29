@@ -1,5 +1,6 @@
 package com.example.capston2.AI;
 
+import com.example.capston2.Api.ApiException;
 import com.example.capston2.Model.Catalog;
 import com.example.capston2.Model.Designer;
 import com.example.capston2.Model.Message;

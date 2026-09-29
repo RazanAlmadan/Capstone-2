@@ -25,7 +25,6 @@ public class Project {
     private Integer orderId;
     @NotEmpty
     private String attachmentFile;
-    @NotEmpty
     @Pattern(regexp = "^(Waiting For Approval|Rejected|Accepted)$")
     private String status = "Waiting For Approval";
 

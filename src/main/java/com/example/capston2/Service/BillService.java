@@ -1,5 +1,6 @@
 package com.example.capston2.Service;
 
+import com.example.capston2.Api.ApiException;
 import com.example.capston2.Model.Bill;
 import com.example.capston2.Repository.BillRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,10 @@ public class BillService {
         billRepository.save(bill);
     }
 
-    public Boolean updateBill(Integer id, Bill bill){
+    public void updateBill(Integer id, Bill bill){
         Bill oldBill = billRepository.findBillById(id);
         if (oldBill == null){
-            return false;
+            throw new ApiException("bill not found");
         }
         oldBill.setOrderId(bill.getOrderId());
         oldBill.setDownPayment(bill.getDownPayment());
@@ -31,15 +32,14 @@ public class BillService {
         oldBill.setFullPayment(bill.getFullPayment());
         oldBill.setStatues(bill.getStatues());
         billRepository.save(oldBill);
-        return true;
+
     }
 
-    public Boolean deleteBill(Integer id){
+    public void deleteBill(Integer id){
         Bill oldBill = billRepository.findBillById(id);
         if (oldBill == null){
-            return false;
+            throw new ApiException("Bill not found");
         }
         billRepository.delete(oldBill);
-        return true;
     }
 }

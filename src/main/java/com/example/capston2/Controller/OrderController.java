@@ -22,34 +22,20 @@ public class OrderController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addOrder(@RequestBody @Valid Order order, Errors errors){
-        if (errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> addOrder(@RequestBody @Valid Order order){
         orderService.addOrder(order);
         return ResponseEntity.status(200).body(new ApiResponse("Order was added"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateOrder(@PathVariable Integer id, @RequestBody @Valid Order order, Errors errors){
-        if (errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
-        Boolean results = orderService.updateOrder(id, order);
-        if (!results){
-            return ResponseEntity.status(400).body(new ApiResponse("ID was not found"));
-        }
+    public ResponseEntity<?> updateOrder(@PathVariable Integer id, @RequestBody @Valid Order order){
+        orderService.updateOrder(id, order);
         return ResponseEntity.status(200).body(new ApiResponse("Order was updated"));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable Integer id){
-        Boolean results = orderService.deleteOrder(id);
-        if (!results){
-            return ResponseEntity.status(400).body(new ApiResponse("ID was not found"));
-        }
+        orderService.deleteOrder(id);
         return ResponseEntity.status(200).body(new ApiResponse("Order was deleted"));
     }
 }

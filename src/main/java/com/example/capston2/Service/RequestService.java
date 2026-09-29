@@ -1,5 +1,6 @@
 package com.example.capston2.Service;
 
+import com.example.capston2.Api.ApiException;
 import com.example.capston2.Model.Client;
 import com.example.capston2.Model.Designer;
 import com.example.capston2.Model.Request;
@@ -25,29 +26,30 @@ public class RequestService {
         return requestRepository.findAll();
     }
 
-    public Integer addRequest(Request request){
+    public void addRequest(Request request){
         Client client = clientRepository.findClientById(request.getClientId());
         if (client == null){
-            return 1;
+            throw new ApiException("client not found");
         }
         Designer designer = designerRepository.findDesignerById(request.getDesignerId());
         if (designer == null){
-            return 2;
+            throw new ApiException("designer not found");
         }
         if (request.getStatus().equals("Accepted") || request.getStatus().equals("Rejected")){
-            return 3;
+            throw new ApiException("Can't create a request with Accepted or Rejected status");
         }
+        request.setStatus("On Hold");
         request.setRequestTime(LocalDate.now());
         requestRepository.save(request);
         String requestInfo = request.getProjectDetails();
         notificationService.sendRequestNotification(designer.getEmail(), requestInfo, designer.getName());
-        return 0;
+
     }
 
-    public Boolean updateRequest(Integer id, Request request){
+    public void updateRequest(Integer id, Request request){
         Request oldRequest = requestRepository.findRequestById(id);
         if (oldRequest == null){
-            return false;
+            throw new ApiException("request not found");
         }
         oldRequest.setClientId(request.getClientId());
         oldRequest.setDesignerId(request.getDesignerId());
@@ -55,15 +57,13 @@ public class RequestService {
         oldRequest.setProjectDetails(request.getProjectDetails());
         oldRequest.setStatus(request.getStatus());
         requestRepository.save(oldRequest);
-        return true;
     }
 
-    public Boolean deleteRequest(Integer id){
+    public void deleteRequest(Integer id){
         Request oldRequest = requestRepository.findRequestById(id);
         if (oldRequest == null){
-            return false;
+            throw new ApiException("request not found");
         }
         requestRepository.delete(oldRequest);
-        return true;
     }
 }
