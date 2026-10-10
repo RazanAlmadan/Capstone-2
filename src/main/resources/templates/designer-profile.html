@@ -5,7 +5,7 @@
 <nav class="site-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-links"><a href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a><a href="/about">About</a></div><div class="nav-actions"><a class="btn-outline btn-sm" href="/login">Login</a><a class="btn-primary btn-sm" href="/signup">Join</a></div></nav>
 <main class="page section">
     <div class="profile">
-        <div><img class="profile-image" th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/Designer.png'}" alt="Designer profile"></div>
+        <div><img class="profile-image" th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/logo.png'}" alt="Designer profile"></div>
         <div class="profile-side">
             <div><div class="kicker" th:text="${designer.visualField}">Visual field</div><h1 th:text="${designer.name}">Designer</h1><p class="muted" th:text="${designer.bio != null and !#strings.isEmpty(designer.bio) ? designer.bio : 'Creative professional ready for new projects.'}"></p></div>
             <div class="stat-row"><div class="stat"><strong th:text="${designer.averageRating != null ? designer.averageRating : '—'}">—</strong><span>Rating</span></div><div class="stat"><strong th:text="${designer.ratingCount != null ? designer.ratingCount : 0}">0</strong><span>Reviews</span></div><div class="stat"><strong th:text="${catalogs != null ? catalogs.size() : 0}">0</strong><span>Catalogs</span></div></div>

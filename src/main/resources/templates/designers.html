@@ -1,27 +1,86 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Designers · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"></head>
-<body>
-<nav class="site-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-links"><a href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a><a href="/about">About</a></div><div class="nav-actions"><a class="btn-outline btn-sm" href="/login">Login</a><a class="btn-primary btn-sm" href="/signup">Join</a></div></nav>
-<main class="page section">
-    <div class="section-head"><div><div class="kicker">Directory</div><h2>Find your designer</h2><p>Search by name or browse a visual field.</p></div></div>
-    <div class="card pad" style="margin-bottom:22px">
-        <div class="filters">
-            <div class="search-wrap"><form action="/designers/search" method="get"><input class="search-control" name="keyword" placeholder="Search designers or skills..." th:value="${keyword}"></form></div>
-            <div class="select-wrap"><select id="categorySelect" class="search-control"><option value="">All categories</option><option>Logo Design</option><option>Interior Design</option><option>Illustration</option><option>Motion Graphics</option><option>UI/UX</option><option>Social Media Design</option><option>3D Modeling</option></select></div>
-            <button class="btn-primary" type="button" onclick="filterCategory()">Filter</button><button class="btn-ghost" type="button" onclick="ratingFilter()">Top rated</button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090d20">
+    <title>Explore Designers · Tasmeem Hub</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="directory-page">
+<nav class="site-nav">
+    <a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub logo"><span>Tasmeem Hub</span></a>
+    <div class="nav-links"><a class="active" href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a><a href="/about">About</a></div>
+    <div class="nav-actions"><a class="btn-outline btn-sm" href="/login">Login</a><a class="btn-primary btn-sm" href="/signup">Join</a></div>
+</nav>
+
+<main>
+    <section class="directory-hero">
+        <div class="page directory-hero-grid">
+            <div class="directory-copy">
+                <div class="directory-eyebrow"><span class="directory-pulse"></span> THE CREATIVE DIRECTORY</div>
+                <h1>Meet the minds<br>behind the <span class="gradient-text">magic.</span></h1>
+                <p>From bold brand identities to digital experiences, find the creative talent that gets your vision.</p>
+                <div class="directory-stats"><span><strong>01</strong> Discover talent</span><span><strong>02</strong> Explore portfolios</span><span><strong>03</strong> Make it happen</span></div>
+            </div>
+            <div class="directory-art" aria-hidden="true">
+                <div class="directory-orbit orbit-one"></div><div class="directory-orbit orbit-two"></div>
+                <div class="directory-art-card art-card-back"><span>✳</span><small>THINK<br>DIFFERENT</small></div>
+                <div class="directory-art-card art-card-front"><span class="art-spark">✦</span><div class="art-lines"><i></i><i></i><i></i></div><small>IDEAS INTO<br>IDENTITY</small></div>
+                <div class="directory-art-chip">CREATIVE<br>ENERGY <b>↗</b></div>
+            </div>
         </div>
-    </div>
-    <div class="grid-4">
-        <article class="card designer-card" th:each="designer : ${designers}">
-            <img th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/Designer.png'}" alt="Designer">
-            <div class="content"><h3 th:text="${designer.name}">Designer</h3><p class="meta" th:text="${designer.visualField}">Visual field</p><p class="muted" th:text="${designer.bio != null and !#strings.isEmpty(designer.bio) ? designer.bio : 'Creative professional ready for new projects.'}"></p><div class="actions"><span class="rating" th:text="${designer.averageRating != null ? '★ ' + designer.averageRating + ' (' + designer.ratingCount + ')' : 'New'}"></span><a class="btn-primary btn-sm" th:href="@{/designer/{id}(id=${designer.id})}">View profile</a></div></div>
-        </article>
-    </div>
-    <div class="empty" th:if="${#lists.isEmpty(designers)}">No designers match this search yet.</div>
+    </section>
+
+    <section class="page directory-content">
+        <div class="directory-section-head">
+            <div><div class="kicker">YOUR NEXT CREATIVE MATCH</div><h2>Find your kind of <span class="gradient-text">creative.</span></h2><p>Search the community or browse by specialty.</p></div>
+            <div class="directory-count"><span class="count-dot"></span> Made for big ideas</div>
+        </div>
+
+        <div class="directory-toolbar">
+            <form class="directory-search" action="/designers/search" method="get">
+                <span class="search-symbol" aria-hidden="true">⌕</span>
+                <input name="keyword" aria-label="Search designers" placeholder="Search by name, style, or skill..." th:value="${keyword}">
+                <button class="btn-primary" type="submit">Search <span aria-hidden="true">↗</span></button>
+            </form>
+            <div class="directory-filter-row">
+                <label class="category-select-wrap"><span class="sr-only">Design category</span>
+                    <select id="categorySelect" class="search-control">
+                        <option value="">All creative fields</option>
+                        <option value="Logo Design">Logo Design</option><option value="Interior Design">Interior Design</option><option value="Illustration">Illustration</option><option value="Motion Graphics">Motion Graphics</option><option value="UI/UX">UI/UX</option><option value="Social Media Design">Social Media Design</option><option value="3D Modeling">3D Modeling</option>
+                    </select>
+                </label>
+                <button class="btn-ghost" type="button" onclick="filterCategory()">Browse category</button>
+                <button class="btn-ghost directory-rated" type="button" onclick="ratingFilter()">★ Top rated</button>
+            </div>
+        </div>
+
+        <div class="directory-results-line"><span>DESIGNERS TO DISCOVER</span><span>Every great idea starts somewhere <b>✳</b></span></div>
+        <div class="grid-4 directory-grid">
+            <article class="card designer-card directory-designer-card" th:each="designer,iter : ${designers}">
+                <a class="directory-image-link" th:href="@{/designer/{id}(id=${designer.id})}" th:aria-label="'View profile for ' + ${designer.name}">
+                    <div class="directory-image-wrap">
+                        <img th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/logo.png'}" th:alt="${designer.name} + ' portfolio preview'" loading="lazy">
+                        <span class="directory-image-badge" th:text="${designer.visualField != null ? designer.visualField : 'Creative talent'}">Creative talent</span>
+                        <span class="directory-image-arrow">↗</span>
+                    </div>
+                </a>
+                <div class="content directory-designer-content">
+                    <div class="directory-name-line"><h3 th:text="${designer.name}">Designer name</h3><span class="directory-spark">✳</span></div>
+                    <p class="meta" th:text="${designer.visualField != null ? designer.visualField : 'Independent designer'}">Visual field</p>
+                    <p class="directory-bio" th:text="${designer.bio != null and !#strings.isEmpty(designer.bio) ? designer.bio : 'Creative professional ready to bring your next idea to life.'}">Creative professional</p>
+                    <div class="actions directory-card-footer"><span class="rating" th:text="${designer.averageRating != null ? '★ ' + designer.averageRating + (designer.ratingCount != null ? ' · ' + designer.ratingCount + ' reviews' : '') : '✦ New talent'}">✦ New talent</span><a class="directory-profile-link" th:href="@{/designer/{id}(id=${designer.id})}">Meet designer <span>↗</span></a></div>
+                </div>
+            </article>
+        </div>
+        <div class="empty directory-empty" th:if="${#lists.isEmpty(designers)}"><span>✳</span><h3>No matches just yet</h3><p>Try another search and discover a new creative direction.</p><a class="btn-primary" href="/designers">Explore all designers</a></div>
+    </section>
 </main>
+<footer><div class="page">© 2026 Tasmeem Hub <span>— Made for creativity.</span></div></footer>
 <script>
-function filterCategory(){const c=document.getElementById('categorySelect').value;if(c) location.href='/designers/category?category='+encodeURIComponent(c);}
+function filterCategory(){const c=document.getElementById('categorySelect').value;if(c) location.href='/designers/category?category='+encodeURIComponent(c);else location.href='/designers';}
 function ratingFilter(){const c=document.getElementById('categorySelect').value;location.href=c?'/designers/rating/category?category='+encodeURIComponent(c):'/designers/rating';}
 </script>
-</body></html>
+</body>
+</html>
