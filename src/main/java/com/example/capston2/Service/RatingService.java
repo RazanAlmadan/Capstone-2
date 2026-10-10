@@ -55,10 +55,10 @@ public class RatingService {
 
     }
 
-    public Boolean updateRating(Integer id, Rating rating){
+    public void updateRating(Integer id, Rating rating){
         Rating oldRating = ratingRepository.findRatingById(id);
         if (oldRating == null){
-            return false;
+            throw new ApiException("rating not found");
         }
         oldRating.setOrderId(rating.getOrderId());
         oldRating.setRate(rating.getRate());
@@ -69,7 +69,6 @@ public class RatingService {
         designer.setAverageRating(calculateAverageRating(designer.getId()));
         designer.setRatingCount(ratingRepository.findRatingByDesignerId(oldRating.getDesignerId()).size());
         designerRepository.save(designer);
-        return true;
     }
 
     public void deleteRating(Integer id){

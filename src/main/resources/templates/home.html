@@ -20,20 +20,28 @@
     <section class="hero">
         <div class="page hero-grid">
             <div>
-                <div class="kicker">Saudi design marketplace</div>
-                <h1>Turn a good idea into a great design.</h1>
-                <p>Tasmeem Hub connects clients with designers, from first request to chat, proposal, payment, and final project delivery.</p>
-                <div class="hero-actions"><a class="btn-primary" href="/designers">Find a designer</a><a class="btn-outline" href="/signup">Create an account</a></div>
+                <div class="kicker"><span class="kicker-spark">✦</span> THE SAUDI DESIGN MARKETPLACE</div>
+                <h1>Big ideas deserve <span class="gradient-text">bold design.</span></h1>
+                <p>Meet the creatives who get your vision. Explore original work, discover your designer, and bring your next idea to life — all in one place.</p>
+                <div class="hero-actions"><a class="btn-primary" href="/designers">Explore designers <span aria-hidden="true">↗</span></a><a class="btn-outline" href="/catalogs">Explore portfolios</a></div>
+                <div class="hero-proof"><div class="proof-avatars"><span>✳</span><span>✦</span><span>◈</span></div><span><strong>Made for creativity.</strong><br>Built to bring ideas together.</span></div>
             </div>
-            <div class="hero-card">
-                <img src="/css/images/logo.png" alt="Designer workspace">
-                <div class="hero-card-caption"><strong>Creative work, one place</strong><span class="muted">Browse • Chat • Create</span></div>
+            <div class="hero-artwork" aria-label="Creative design showcase">
+                <div class="artwork-glow"></div>
+                <div class="artwork-tile artwork-tile-main">
+                    <img src="/css/images/logo.png" alt="Creative designer at work">
+                    <span class="artwork-label">YOUR NEXT BIG IDEA</span>
+                </div>
+                <div class="artwork-tile artwork-tile-cyan"><span>✳</span><small>MAKE IT<br>MEMORABLE</small></div>
+                <div class="artwork-tile artwork-tile-orange"><span>✦</span><small>MADE TO<br>STAND OUT</small></div>
+                <div class="artwork-sticker">DESIGN<br>WITHOUT<br>LIMITS<span>↗</span></div>
+                <div class="artwork-caption"><span class="live-dot"></span> A creative space for Saudi talent</div>
             </div>
         </div>
     </section>
 
     <section class="section"><div class="page">
-        <div class="section-head"><div><div class="kicker">Simple workflow</div><h2>Everything you need to start</h2></div></div>
+        <div class="section-head"><div><div class="kicker">FROM IDEA TO IMPACT</div><h2>Your idea. Their talent. <span class="gradient-text">One hub.</span></h2><p>Everything you need to make great work happen.</p></div></div>
         <div class="grid-3">
             <div class="card pad step-card"><div class="icon">🎨</div><h3>Explore</h3><p>Search designers by name, category, or rating and open their portfolios.</p></div>
             <div class="card pad step-card"><div class="icon">💬</div><h3>Collaborate</h3><p>Send a project request, open a chat, and receive a proposal.</p></div>
@@ -42,7 +50,7 @@
     </div></section>
 
     <section class="section" style="padding-top:0"><div class="page">
-        <div class="section-head"><div><div class="kicker">Featured</div><h2>Designers</h2></div><a class="btn-ghost btn-sm" href="/designers">View all</a></div>
+        <div class="section-head"><div><div class="kicker">MEET YOUR CREATIVE MATCH</div><h2>Talent worth <span class="gradient-text">discovering.</span></h2><p>Explore the people behind the next big idea.</p></div><a class="btn-ghost btn-sm" href="/designers">Explore all designers ↗</a></div>
         <div class="grid-4">
             <article class="card designer-card" th:each="designer,iter : ${designers}" th:if="${iter.index < 4}">
                 <img th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/logo.png'}" alt="Designer">
