@@ -1,9 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Join · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"></head>
-<body><nav class="site-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-actions"><a class="btn-ghost btn-sm" href="/login">Already have an account?</a></div></nav>
-<main class="page section"><div class="section-head"><div><div class="kicker">Get started</div><h2>Create your Tasmeem Hub account</h2><p>Choose whether you are hiring a designer or offering your design services.</p></div></div>
-<div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
-<section class="card pad"><h3>Client</h3><form class="form-grid" action="/signup/client" method="post"><label>Name<input name="name" required minlength="2"></label><label>Email<input name="email" type="email" required></label><label>Password<input name="password" type="password" required minlength="8"></label><button class="btn-primary" type="submit">Create client account</button></form></section>
-<section class="card pad"><h3>Designer</h3><form class="form-grid" action="/signup/designer" method="post"><label>Name<input name="name" required minlength="2"></label><label>Email<input name="email" type="email" required></label><label>Password<input name="password" type="password" required minlength="8"></label><label>Visual field<select name="visualField" required><option value="">Choose</option><option>Logo Design</option><option>Interior Design</option><option>Illustration</option><option>Motion Graphics</option><option>UI/UX</option><option>Social Media Design</option><option>3D Modeling</option></select></label><label>Profile image URL<input name="profileImageUrl" type="url" placeholder="https://example.com/your-photo.jpg"></label><label>Short bio<textarea name="bio" placeholder="Tell clients what you do..."></textarea></label><button class="btn-primary" type="submit">Create designer account</button><p class="form-note">Use a public image URL (for example, an image hosted on Imgur or another image host). The image will appear on your designer card and profile.</p></form></section>
-</div>
-<div class="alert" style="margin-top:18px" th:if="${error}" th:text="${error}"></div><p class="form-note" style="margin-top:18px">Passwords are validated by the current backend rules. For a production deployment, add Spring Security + password hashing.</p></main></body></html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create account · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"><link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-page">
+<nav class="site-nav auth-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-actions"><a class="btn-ghost btn-sm" href="/login">Already have an account?</a></div></nav>
+<main class="signup-shell">
+  <header class="signup-heading"><div class="auth-kicker">JOIN THE CREATIVE COMMUNITY</div><h1>Make room for <span>great ideas.</span></h1><p>Create an account to find your next designer or showcase your talent.</p></header>
+  <div class="auth-alert signup-alert" role="alert" th:if="${error}" th:text="${error}"></div>
+  <div class="signup-grid">
+    <section class="signup-card client-card"><div class="signup-icon">✦</div><div class="auth-kicker">FOR CLIENTS</div><h2>Find your creative partner.</h2><p class="signup-description">Share your vision and connect with designers who can bring it to life.</p>
+      <form class="auth-form" action="/signup/client" method="post">
+        <label for="client-name">Your name</label><input id="client-name" name="name" autocomplete="name" placeholder="Full name" required minlength="2">
+        <label for="client-email">Email address</label><input id="client-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <label for="client-password">Password</label><input id="client-password" name="password" type="password" autocomplete="new-password" placeholder="8+ characters, mixed case, number & symbol" required minlength="8">
+        <button class="auth-submit" type="submit">Create client account <span aria-hidden="true">↗</span></button>
+      </form>
+    </section>
+    <section class="signup-card designer-card"><div class="signup-icon">✧</div><div class="auth-kicker">FOR DESIGNERS</div><h2>Put your talent out there.</h2><p class="signup-description">Build your presence, show your style, and meet your next client.</p>
+      <form class="auth-form" action="/signup/designer" method="post">
+        <label for="designer-name">Your name</label><input id="designer-name" name="name" autocomplete="name" placeholder="Full name" required minlength="2">
+        <label for="designer-email">Email address</label><input id="designer-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <label for="designer-password">Password</label><input id="designer-password" name="password" type="password" autocomplete="new-password" placeholder="8+ characters, mixed case, number & symbol" required minlength="8">
+        <label for="visual-field">Design specialty</label><select id="visual-field" name="visualField" required><option value="">Choose your specialty</option><option>Logo Design</option><option>Interior Design</option><option>Illustration</option><option>Motion Graphics</option><option>UI/UX</option><option>Social Media Design</option><option>3D Modeling</option></select>
+        <label for="profile-image">Profile image URL <span class="optional">(optional)</span></label><input id="profile-image" name="profileImageUrl" type="url" placeholder="https://example.com/photo.jpg">
+        <label for="designer-bio">Short bio <span class="optional">(optional)</span></label><textarea id="designer-bio" name="bio" rows="3" placeholder="Tell clients about your style and experience..."></textarea>
+        <button class="auth-submit" type="submit">Create designer account <span aria-hidden="true">↗</span></button>
+      </form>
+    </section>
+  </div>
+  <p class="auth-switch signup-switch">Already part of the community? <a href="/login">Sign in</a></p>
+</main>
+</body></html>

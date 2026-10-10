@@ -32,7 +32,17 @@ public class AuthController {
                         @RequestParam String password,
                         HttpSession session,
                         Model model) {
-        Client client = clientRepository.findClientByEmail(email);
+        // Login-only fix: ignore accidental spaces around the email and match email case-insensitively.
+        String normalizedEmail = email == null ? "" : email.trim();
+
+        Client client = clientRepository.findClientByEmail(normalizedEmail);
+        if (client == null) {
+            client = clientRepository.findAll().stream()
+                    .filter(candidate -> candidate.getEmail() != null
+                            && candidate.getEmail().equalsIgnoreCase(normalizedEmail))
+                    .findFirst()
+                    .orElse(null);
+        }
         if (client != null && password.equals(client.getPassword())) {
             session.setAttribute("role", "CLIENT");
             session.setAttribute("userId", client.getId());
@@ -40,7 +50,14 @@ public class AuthController {
             return "redirect:/dashboard";
         }
 
-        Designer designer = designerRepository.findDesignerByEmail(email);
+        Designer designer = designerRepository.findDesignerByEmail(normalizedEmail);
+        if (designer == null) {
+            designer = designerRepository.findAll().stream()
+                    .filter(candidate -> candidate.getEmail() != null
+                            && candidate.getEmail().equalsIgnoreCase(normalizedEmail))
+                    .findFirst()
+                    .orElse(null);
+        }
         if (designer != null && password.equals(designer.getPassword())) {
             session.setAttribute("role", "DESIGNER");
             session.setAttribute("userId", designer.getId());
@@ -49,7 +66,7 @@ public class AuthController {
         }
 
         model.addAttribute("error", "Email or password is incorrect.");
-        model.addAttribute("email", email);
+        model.addAttribute("email", normalizedEmail);
         return "login";
     }
 

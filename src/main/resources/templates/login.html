@@ -1,6 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Login · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"></head>
-<body><nav class="site-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-actions"><a class="btn-ghost btn-sm" href="/designers">Browse designers</a></div></nav>
-<main class="form-card card pad"><div class="kicker">Welcome back</div><h1>Sign in</h1><p class="muted">Use the account you created as a client or designer.</p><div class="alert" th:if="${error}" th:text="${error}"></div>
-<form class="form-grid" action="/login" method="post"><label>Email<input name="email" type="email" required th:value="${email}"></label><label>Password<input name="password" type="password" required></label><button class="btn-primary" type="submit">Sign in</button></form>
-<p class="form-note" style="margin-top:16px">New to Tasmeem Hub? <a href="/signup">Create an account</a>.</p></main></body></html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"><link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-page">
+<nav class="site-nav auth-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-actions"><a class="btn-ghost btn-sm" href="/designers">Explore designers</a></div></nav>
+<main class="auth-shell">
+  <section class="auth-art">
+    <span class="auth-eyebrow">YOUR NEXT CREATIVE COLLABORATION</span>
+    <h1>Good ideas<br><span>start here.</span></h1>
+    <p>Meet talented designers, share your vision, and bring your next project to life.</p>
+    <div class="auth-art-orbit orbit-one"></div><div class="auth-art-orbit orbit-two"></div>
+    <div class="auth-art-chip chip-one">✦ Create something bold</div><div class="auth-art-chip chip-two">DESIGN · CONNECT · CREATE</div>
+  </section>
+  <section class="auth-panel">
+    <div class="auth-kicker">WELCOME BACK</div><h2>Sign in to TasmeemHub</h2><p class="auth-subtitle">Pick up where your creativity left off.</p>
+    <div class="auth-alert" role="alert" th:if="${error}" th:text="${error}"></div>
+    <form class="auth-form" action="/login" method="post">
+      <label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="username" placeholder="you@example.com" required th:value="${email}">
+      <label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+      <button class="auth-submit" type="submit">Sign in <span aria-hidden="true">↗</span></button>
+    </form>
+    <p class="auth-switch">New to TasmeemHub? <a href="/signup">Create an account</a></p>
+    <a class="auth-back" href="/">← Back to home</a>
+  </section>
+</main>
+</body></html>
