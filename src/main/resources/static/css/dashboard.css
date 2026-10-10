@@ -83,3 +83,77 @@
 .dashboard-page .proposal-mode{background:#101a2d;color:#cbd6ef;border:1px solid rgba(119,147,190,.28);border-radius:9px;padding:9px 12px;cursor:pointer;}
 .dashboard-page .proposal-mode.active{color:#06121e;background:linear-gradient(110deg,#42f5e6,#8ea4ff);border-color:transparent;font-weight:800;}
 @media(max-width:600px){.dashboard-page .proposal-composer-heading{align-items:flex-start;flex-direction:column}.dashboard-page .proposal-toggle{width:100%}.dashboard-page #panel-chat .messages .message{max-width:94%}}
+
+
+/* Orders, proposals and payment cards — focused visual polish, no workflow changes */
+.dashboard-page #panel-proposals .panel-card,
+.dashboard-page #panel-orders .panel-card,
+.dashboard-page #panel-projects .panel-card{position:relative;overflow:hidden}
+.dashboard-page #panel-proposals .section-head,
+.dashboard-page #panel-orders .section-head,
+.dashboard-page #panel-projects .section-head{padding-bottom:17px;border-bottom:1px solid var(--dash-line)}
+.dashboard-page #proposalsList,
+.dashboard-page #ordersList,
+.dashboard-page #projectsList{gap:16px}
+.dashboard-page #proposalsList > *,
+.dashboard-page #ordersList > *,
+.dashboard-page #projectsList > *{min-width:0}
+.dashboard-page #proposalsList .list-item,
+.dashboard-page #ordersList .list-item,
+.dashboard-page #projectsList .list-item{
+  position:relative;padding:21px 22px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(20,32,55,.94),rgba(8,15,29,.96));
+  border:1px solid rgba(119,147,190,.23);
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease
+}
+.dashboard-page #proposalsList .list-item:hover,
+.dashboard-page #ordersList .list-item:hover,
+.dashboard-page #projectsList .list-item:hover{
+  border-color:rgba(66,245,230,.42);transform:translateY(-2px);
+  box-shadow:0 16px 36px rgba(0,0,0,.2),0 0 24px rgba(66,245,230,.035)
+}
+.dashboard-page #proposalsList .list-title,
+.dashboard-page #ordersList .list-title,
+.dashboard-page #projectsList .list-title{font-size:1.04rem;letter-spacing:-.015em}
+.dashboard-page #proposalsList .muted,
+.dashboard-page #ordersList .muted,
+.dashboard-page #projectsList .muted{line-height:1.7;overflow-wrap:anywhere}
+.dashboard-page #proposalsList .actions,
+.dashboard-page #ordersList .actions,
+.dashboard-page #projectsList .actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.dashboard-page #proposalsList .actions button,
+.dashboard-page #ordersList .actions button,
+.dashboard-page #projectsList .actions button,
+.dashboard-page #proposalsList .actions a,
+.dashboard-page #ordersList .actions a,
+.dashboard-page #projectsList .actions a{min-height:38px}
+.dashboard-page #proposalsList .badge,
+.dashboard-page #ordersList .badge,
+.dashboard-page #projectsList .badge{white-space:normal;line-height:1.3}
+.dashboard-page #panel-orders .summary,
+.dashboard-page #panel-proposals .summary{min-width:0}
+.dashboard-page .draft-composer{
+  margin:0 0 16px;padding:22px;border-radius:18px;
+  background:linear-gradient(145deg,rgba(20,31,53,.98),rgba(10,17,32,.99));
+  border:1px solid rgba(167,123,255,.3);box-shadow:0 16px 38px rgba(0,0,0,.2)
+}
+.dashboard-page .draft-composer .kicker{color:var(--dash-purple)}
+.dashboard-page .draft-composer .form-note{line-height:1.6}
+.dashboard-page #ordersList .btn-primary,
+.dashboard-page #proposalsList .btn-primary,
+.dashboard-page #projectsList .btn-primary{background:linear-gradient(110deg,#42f5e6,#7d9bff);color:#07111e}
+.dashboard-page #ordersList .btn-outline,
+.dashboard-page #proposalsList .btn-outline,
+.dashboard-page #projectsList .btn-outline{background:rgba(255,255,255,.035)}
+.dashboard-page #ordersList .btn-danger,
+.dashboard-page #proposalsList .btn-danger,
+.dashboard-page #projectsList .btn-danger{border:1px solid rgba(255,112,139,.35);color:#ff9eaf;background:rgba(255,112,139,.07)}
+@media(max-width:600px){
+  .dashboard-page #proposalsList .list-item,
+  .dashboard-page #ordersList .list-item,
+  .dashboard-page #projectsList .list-item{padding:16px}
+  .dashboard-page #proposalsList .actions button,
+  .dashboard-page #ordersList .actions button,
+  .dashboard-page #projectsList .actions button{flex:1 1 auto}
+}
