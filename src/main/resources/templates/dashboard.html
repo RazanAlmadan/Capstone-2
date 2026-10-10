@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"></head>
-<body>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"><link rel="stylesheet" href="/css/dashboard.css"></head>
+<body class="dashboard-page">
 <nav class="site-nav">
     <a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a>
     <div class="nav-links"><a href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a></div>
@@ -600,10 +600,17 @@ function renderProposalComposer(id) {
     if (!holder || !c) return;
 
     holder.style.display = 'block';
+    const wasExpanded = holder.dataset.chatRoomId === String(id) && holder.dataset.expanded === 'true';
+    holder.dataset.chatRoomId = String(id);
+    holder.dataset.expanded = wasExpanded ? 'true' : 'false';
 
     holder.innerHTML =
         '<div class="card pad proposal-composer-card">' +
-            '<div class="kicker">Designer tools</div>' +
+            '<div class="proposal-composer-heading">' +
+                '<div><div class="kicker">Designer tools</div><div class="proposal-composer-title">Create a proposal</div><div class="proposal-composer-subtitle">Send a manual or AI-assisted offer to this client.</div></div>' +
+                '<button type="button" class="btn-outline btn-sm proposal-toggle" aria-expanded="' + wasExpanded + '" onclick="toggleProposalComposer(' + id + ')">' + (wasExpanded ? 'Hide ▲' : 'Create proposal ＋') + '</button>' +
+            '</div>' +
+            '<div class="proposal-composer-body" ' + (wasExpanded ? '' : 'hidden') + '>' +
             '<div class="proposal-mode-tabs">' +
                 '<button type="button" class="proposal-mode active" data-mode="manual" onclick="switchProposalMode(\'manual\',' + id + ')">Manual proposal</button>' +
                 '<button type="button" class="proposal-mode" data-mode="ai" onclick="switchProposalMode(\'ai\',' + id + ')">AI-assisted proposal</button>' +
@@ -635,7 +642,22 @@ function renderProposalComposer(id) {
                     '<button class="btn-primary" type="submit">Review complete — send proposal</button>' +
                 '</form>' +
             '</div>' +
+            '</div>' +
         '</div>';
+}
+
+function toggleProposalComposer(chatRoomId) {
+    const holder = document.getElementById('proposalComposer');
+    if (!holder || holder.dataset.chatRoomId !== String(chatRoomId)) return;
+    const body = holder.querySelector('.proposal-composer-body');
+    const button = holder.querySelector('.proposal-toggle');
+    const expanded = holder.dataset.expanded !== 'true';
+    holder.dataset.expanded = String(expanded);
+    if (body) body.hidden = !expanded;
+    if (button) {
+        button.textContent = expanded ? 'Hide ▲' : 'Create proposal ＋';
+        button.setAttribute('aria-expanded', String(expanded));
+    }
 }
 
 function switchProposalMode(mode, chatRoomId) {

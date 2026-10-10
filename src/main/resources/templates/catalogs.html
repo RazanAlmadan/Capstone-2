@@ -1,5 +1,75 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Catalogs · Tasmeem Hub</title><link rel="stylesheet" href="/css/app.css"></head>
-<body><nav class="site-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-links"><a href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a><a href="/about">About</a></div></nav>
-<main class="page section"><div class="section-head"><div><div class="kicker">Portfolio library</div><h2>Designer catalogs</h2><p>Browse example work from the designers in the marketplace.</p></div></div>
-<div class="catalog-grid"><article class="card catalog-card" th:each="catalog : ${catalogs}" th:if="${catalog.images != null and !catalog.images.isEmpty()}"><div class="catalog-image-grid"><img th:each="image : ${catalog.images}" th:src="${image}" alt="Catalog image"></div><div class="content"><h3 th:text="${catalog.name}">Catalog</h3><a class="btn-ghost btn-sm" th:href="@{/designer/{id}(id=${catalog.designerId})}">View designer</a></div></article></div><div class="empty" th:if="${#lists.isEmpty(catalogs)}">No catalogs have been added yet.</div></main></body></html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Gallery · Tasmeem Hub</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/css/catalogs.css">
+</head>
+<body class="catalog-gallery-page">
+<nav class="site-nav gallery-nav">
+    <a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub logo"><span>Tasmeem Hub</span></a>
+    <div class="nav-links"><a href="/designers">Designers</a><a class="active" href="/catalogs">Gallery</a><a href="/ai">AI Matching</a><a href="/about">About</a></div>
+    <div class="nav-actions"><a class="gallery-nav-cta" href="/designers">Find a designer <span aria-hidden="true">↗</span></a></div>
+</nav>
+<main>
+    <section class="gallery-hero">
+        <div class="gallery-orb orb-one"></div><div class="gallery-orb orb-two"></div>
+        <div class="gallery-hero-inner">
+            <div class="gallery-eyebrow"><span class="eyebrow-dot"></span> THE TASMEEMHUB COLLECTION</div>
+            <h1>Ideas worth<br><span class="gradient-text">looking closer at.</span></h1>
+            <p>Explore creative work from our designer community. Find a style that speaks to you, then meet the mind behind it.</p>
+            <div class="gallery-hero-stats"><div><strong th:text="${#lists.size(catalogs)}">0</strong><span>catalogs to explore</span></div><i></i><div><strong th:text="${#lists.size(designers)}">0</strong><span>creative talents</span></div></div>
+            <a class="gallery-scroll-link" href="#gallery">Explore the gallery <span>↓</span></a>
+        </div>
+        <div class="hero-art" aria-hidden="true"><div class="art-frame art-frame-back"><span>MAKE<br>IT BOLD.</span><small>CREATIVE CLUB / 026</small></div><div class="art-frame art-frame-front"><div class="art-sun"></div><div class="art-arc"></div><span class="art-caption">DESIGN<br>WITH FEELING</span><small>TH. STUDIO</small></div><div class="art-sticker">✳<span>GOOD<br>IDEAS</span></div></div>
+    </section>
+    <section class="gallery-main" id="gallery">
+        <div class="gallery-section-heading"><div><span class="section-kicker">A LITTLE INSPIRATION</span><h2>The creative <span>gallery</span></h2><p>Every project starts with an idea. Find yours here.</p></div><div class="gallery-count"><span class="count-dot"></span><span id="visibleCount" th:text="${#lists.size(catalogs)} + ' collections'">0 collections</span></div></div>
+        <div class="gallery-toolbar"><label class="gallery-search"><span aria-hidden="true">⌕</span><input id="catalogSearch" type="search" placeholder="Search projects, styles, ideas..." aria-label="Search catalogs"><kbd>SEARCH</kbd></label><div class="gallery-sort-note"><span class="sort-spark">✦</span> Made by independent creatives</div></div>
+        <div class="creative-grid" id="catalogGrid">
+            <article class="creative-card" th:each="catalog,iter : ${catalogs}" th:attr="data-search=${(catalog.name ?: '') + ' ' + (catalog.aiStyle ?: '')}">
+                <a class="creative-visual" th:href="@{/designer/{id}(id=${catalog.designerId})}" th:attr="aria-label='View designer for ' + ${catalog.name}">
+                    <div class="visual-index" th:text="${iter.index + 1 < 10 ? '0' + (iter.index + 1) : iter.index + 1}">01</div>
+                    <div class="creative-images" th:if="${catalog.images != null and !catalog.images.isEmpty()}"><img th:each="image,imgStat : ${catalog.images}" th:if="${imgStat.index < 4}" th:src="${image}" th:alt="${catalog.name + ' portfolio image'}" loading="lazy"></div>
+                    <div class="creative-placeholder" th:if="${catalog.images == null or catalog.images.isEmpty()}"><span class="placeholder-symbol">✳</span><span>THE IDEA<br>COMES FIRST</span><small th:text="${catalog.name}">Creative collection</small></div>
+                    <div class="visual-overlay"><span>Meet the designer</span><b>↗</b></div>
+                </a>
+                <div class="creative-card-body"><div class="creative-card-top"><div><span class="creative-label">CREATIVE COLLECTION</span><h3 th:text="${catalog.name}">Catalog name</h3></div><span class="card-arrow" aria-hidden="true">↗</span></div>
+                    <p class="creative-style" th:if="${catalog.aiStyle != null and !#strings.isEmpty(catalog.aiStyle)}" th:text="${catalog.aiStyle}">Style description</p>
+                    <div class="creative-card-bottom"><span class="designer-byline"><span class="byline-dot"></span><span th:each="designer : ${designers}" th:if="${designer.id == catalog.designerId}" th:text="${designer.name}">Designer</span><span th:if="${#lists.isEmpty(designers)}" th:text="'Designer #' + ${catalog.designerId}">Designer</span></span><a th:href="@{/designer/{id}(id=${catalog.designerId})}">View work <span>→</span></a></div>
+                </div>
+            </article>
+        </div>
+        <div class="gallery-empty" id="searchEmpty" hidden><div class="empty-icon">⌕</div><h3>No matching collections yet</h3><p>Try a different search — your next inspiration might be one word away.</p><button type="button" id="clearSearch">Clear search</button></div>
+        <div class="gallery-empty" th:if="${#lists.isEmpty(catalogs)}"><div class="empty-icon">✳</div><h3>The gallery is getting ready</h3><p>There aren't any catalogs to show just yet. Check back soon to discover work from our creative community.</p><a href="/designers">Meet our designers <span>→</span></a></div>
+        <div class="gallery-bottom-note"><span class="note-star">✳</span><p>Seen something you love? Great collaborations start with a hello.</p><a href="/designers">Find your creative partner <span>↗</span></a></div>
+    </section>
+</main>
+<footer class="gallery-footer"><a class="footer-brand" href="/"><img src="/css/images/logo.png" alt=""><span>Tasmeem Hub</span></a><span>Made for ideas that deserve to be seen.</span><a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Back to top ↑</a></footer>
+<script>
+(() => {
+  const search = document.getElementById('catalogSearch');
+  const cards = Array.from(document.querySelectorAll('.creative-card'));
+  const count = document.getElementById('visibleCount');
+  const empty = document.getElementById('searchEmpty');
+  const clear = document.getElementById('clearSearch');
+  if (!search) return;
+  const filter = () => {
+    const query = search.value.trim().toLowerCase();
+    let visible = 0;
+    cards.forEach(card => {
+      const matches = (card.dataset.search || '').toLowerCase().includes(query);
+      card.hidden = !matches;
+      if (matches) visible++;
+    });
+    if (count) count.textContent = visible + (visible === 1 ? ' collection' : ' collections');
+    if (empty) empty.hidden = visible !== 0 || cards.length === 0;
+  };
+  search.addEventListener('input', filter);
+  if (clear) clear.addEventListener('click', () => { search.value = ''; filter(); search.focus(); });
+})();
+</script>
+</body>
+</html>

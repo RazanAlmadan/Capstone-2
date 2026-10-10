@@ -1,42 +1,202 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title th:text="${designer.name} + ' · Tasmeem Hub'">Designer</title><link rel="stylesheet" href="/css/app.css"></head>
-<body>
-<nav class="site-nav"><a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub"><span>Tasmeem Hub</span></a><div class="nav-links"><a href="/designers">Designers</a><a href="/catalogs">Catalogs</a><a href="/ai">AI Matching</a><a href="/about">About</a></div><div class="nav-actions"><a class="btn-outline btn-sm" href="/login">Login</a><a class="btn-primary btn-sm" href="/signup">Join</a></div></nav>
-<main class="page section">
-    <div class="profile">
-        <div><img class="profile-image" th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/logo.png'}" alt="Designer profile"></div>
-        <div class="profile-side">
-            <div><div class="kicker" th:text="${designer.visualField}">Visual field</div><h1 th:text="${designer.name}">Designer</h1><p class="muted" th:text="${designer.bio != null and !#strings.isEmpty(designer.bio) ? designer.bio : 'Creative professional ready for new projects.'}"></p></div>
-            <div class="stat-row"><div class="stat"><strong th:text="${designer.averageRating != null ? designer.averageRating : '—'}">—</strong><span>Rating</span></div><div class="stat"><strong th:text="${designer.ratingCount != null ? designer.ratingCount : 0}">0</strong><span>Reviews</span></div><div class="stat"><strong th:text="${catalogs != null ? catalogs.size() : 0}">0</strong><span>Catalogs</span></div></div>
-            <div class="card pad">
-                <h3 style="margin-top:0">Start a project</h3>
-                <p class="muted">Send a short project brief and the designer can accept or reject the request.</p>
-                <div th:if="${session.userId == null}" class="alert">Log in as a client to send a project request.</div>
-                <form th:if="${session.userId != null and session.role == 'CLIENT'}" id="requestForm">
-                    <textarea class="field" id="projectDetails" minlength="10" maxlength="500" required placeholder="Describe what you want to design..."></textarea>
-                    <button class="btn-primary" style="margin-top:10px" type="submit">Send request</button>
-                </form>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${designer.name} + ' · Tasmeem Hub'">Designer · Tasmeem Hub</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/css/designer-profile.css">
+</head>
+<body class="designer-profile-page">
+<nav class="site-nav">
+    <a class="brand" href="/">
+        <img src="/css/images/logo.png" alt="Tasmeem Hub logo">
+        <span>Tasmeem Hub</span>
+    </a>
+    <div class="nav-links">
+        <a href="/designers">Discover</a>
+        <a href="/catalogs">Catalogs</a>
+        <a href="/ai">AI Matching</a>
+        <a href="/about">About</a>
+    </div>
+    <div class="nav-actions">
+        <a class="btn-outline btn-sm" href="/login">Login</a>
+        <a class="btn-primary btn-sm" href="/signup">Join the hub</a>
+    </div>
+</nav>
+
+<main>
+    <section class="profile-hero">
+        <div class="profile-hero-glow profile-hero-glow-one"></div>
+        <div class="profile-hero-glow profile-hero-glow-two"></div>
+        <div class="page profile-hero-inner">
+            <a class="profile-back-link" href="/designers">← Back to designers</a>
+            <div class="profile-main">
+                <div class="profile-visual-wrap">
+                    <div class="profile-visual-frame">
+                        <img class="profile-image"
+                             th:src="${designer.profileImageUrl != null and !#strings.isEmpty(designer.profileImageUrl) ? designer.profileImageUrl : '/css/images/logo.png'}"
+                             alt="Designer profile image">
+                    </div>
+                    <span class="profile-visual-tag">CREATIVE MIND · TASMEEM HUB</span>
+                    <span class="profile-orbit profile-orbit-cyan"></span>
+                    <span class="profile-orbit profile-orbit-orange"></span>
+                </div>
+
+                <div class="profile-intro">
+                    <div class="profile-eyebrow"><span class="profile-live-dot"></span> MEET THE CREATIVE</div>
+                    <span class="profile-specialty" th:text="${designer.visualField}">Visual field</span>
+                    <h1 th:text="${designer.name}">Designer name</h1>
+                    <p class="profile-bio"
+                       th:text="${designer.bio != null and !#strings.isEmpty(designer.bio) ? designer.bio : 'A creative professional ready to bring your next big idea to life.'}">
+                        A creative professional ready to bring your next big idea to life.
+                    </p>
+
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <span class="profile-stat-icon">✦</span>
+                            <strong th:text="${designer.averageRating != null ? designer.averageRating : 'New'}">New</strong>
+                            <span>Average rating</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-icon">♡</span>
+                            <strong th:text="${designer.ratingCount != null ? designer.ratingCount : 0}">0</strong>
+                            <span>Reviews</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-icon">▧</span>
+                            <strong th:text="${catalogs != null ? catalogs.size() : 0}">0</strong>
+                            <span>Portfolio sets</span>
+                        </div>
+                    </div>
+                    <a class="profile-cta" href="#start-project">Let's create something <span>↗</span></a>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <section style="margin-top:42px"><div class="section-head"><div><div class="kicker">Portfolio</div><h2>Catalogs</h2></div></div>
-        <div class="catalog-grid">
-            <article class="card catalog-card" th:each="catalog : ${catalogs}" th:if="${catalog.images != null and !catalog.images.isEmpty()}">
-                <div class="catalog-image-grid">
-                    <img th:each="image : ${catalog.images}" th:src="${image}" alt="Catalog image">
+    <section class="page portfolio-section">
+        <div class="portfolio-heading">
+            <div>
+                <div class="profile-section-kicker">A LITTLE SHOWCASE</div>
+                <h2>Selected <span>work.</span></h2>
+                <p>Ideas, experiments, and visuals made to stand out.</p>
+            </div>
+            <div class="portfolio-heading-mark" aria-hidden="true">✳</div>
+        </div>
+
+        <div class="profile-catalog-grid" th:if="${catalogs != null and !catalogs.isEmpty()}">
+            <article class="profile-catalog-card"
+                     th:each="catalog, catalogStat : ${catalogs}"
+                     th:if="${catalog.images != null and !catalog.images.isEmpty()}">
+                <div class="profile-catalog-art">
+                    <img th:each="image, imageStat : ${catalog.images}"
+                         th:if="${imageStat.index < 3}"
+                         th:src="${image}"
+                         th:alt="${catalog.name + ' portfolio image ' + (imageStat.index + 1)}"
+                         loading="lazy">
+                    <span class="profile-catalog-number"
+                          th:text="${catalogStat.index + 1 < 10 ? '0' + (catalogStat.index + 1) : catalogStat.index + 1}">01</span>
                 </div>
-                <div class="content"><strong th:text="${catalog.name}">Catalog</strong></div>
+                <div class="profile-catalog-info">
+                    <div>
+                        <span class="profile-catalog-label">PORTFOLIO COLLECTION</span>
+                        <h3 th:text="${catalog.name}">Catalog name</h3>
+                    </div>
+                    <span class="profile-catalog-arrow">↗</span>
+                </div>
+                <p class="profile-catalog-style"
+                   th:if="${catalog.aiStyle != null and !#strings.isEmpty(catalog.aiStyle)}"
+                   th:text="${catalog.aiStyle}">Creative direction</p>
             </article>
         </div>
-        <div class="empty" th:if="${#lists.isEmpty(catalogs)}">This designer has not added a catalog yet.</div>
+
+        <div class="profile-empty-state" th:if="${catalogs == null or #lists.isEmpty(catalogs)}">
+            <div class="profile-empty-symbol">✳</div>
+            <h3>The next masterpiece is on its way.</h3>
+            <p>This designer hasn't added a portfolio collection yet. Check back soon or start a conversation about your idea.</p>
+        </div>
+    </section>
+
+    <section class="page project-section" id="start-project">
+        <div class="project-panel">
+            <div class="project-panel-art" aria-hidden="true">
+                <span class="project-art-ring"></span>
+                <span class="project-art-star">✳</span>
+                <span class="project-art-caption">YOUR IDEA<br>STARTS HERE</span>
+            </div>
+            <div class="project-panel-copy">
+                <div class="profile-section-kicker">HAVE A PROJECT IN MIND?</div>
+                <h2>Let's make something <span>unforgettable.</span></h2>
+                <p>Share the basics. Your designer can review your brief and respond through the existing project workflow.</p>
+
+                <div th:if="${session.userId == null}" class="profile-login-note">
+                    <span>↗</span>
+                    <div><strong>Ready to get started?</strong><br>Log in as a client to send a project request.</div>
+                    <a href="/login">Log in</a>
+                </div>
+
+                <form th:if="${session.userId != null and session.role == 'CLIENT'}" id="requestForm" class="profile-request-form">
+                    <label for="projectDetails">Tell us about your idea</label>
+                    <textarea class="field" id="projectDetails" minlength="10" maxlength="500" required
+                              placeholder="What are you creating? Include the goal, style, and anything else the designer should know..."></textarea>
+                    <div class="profile-form-footer">
+                        <span>10–500 characters</span>
+                        <button class="btn-primary" type="submit">Send project request <span>↗</span></button>
+                    </div>
+                </form>
+
+                <div th:if="${session.userId != null and session.role != 'CLIENT'}" class="profile-login-note">
+                    <span>✦</span>
+                    <div><strong>Client accounts can send project requests.</strong><br>Switch to a client account to start a project.</div>
+                </div>
+            </div>
+        </div>
     </section>
 </main>
+
+<footer class="profile-footer">
+    <div class="page profile-footer-inner">
+        <a class="brand" href="/"><img src="/css/images/logo.png" alt="Tasmeem Hub logo"><span>Tasmeem Hub</span></a>
+        <span>Good ideas deserve great design.</span>
+        <a href="/designers">Discover more designers ↗</a>
+    </div>
+</footer>
+
 <script th:inline="javascript">
 const designerId = /*[[${designer.id}]]*/ 0;
 const clientId = /*[[${session.userId}]]*/ null;
 const form = document.getElementById('requestForm');
-if(form){form.addEventListener('submit', async (e)=>{e.preventDefault();const details=document.getElementById('projectDetails').value.trim();if(details.length<10)return alert('Please write at least 10 characters.');const body=new URLSearchParams({clientId:String(clientId),projectDetails:details});const r=await fetch('/api/v1/client/send-request/'+designerId,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});const text=await r.text();alert(text);if(r.ok)form.reset();});}
+
+if (form) {
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const details = document.getElementById('projectDetails').value.trim();
+
+        if (details.length < 10) {
+            alert('Please write at least 10 characters.');
+            return;
+        }
+
+        const body = new URLSearchParams({
+            clientId: String(clientId),
+            projectDetails: details
+        });
+
+        try {
+            const response = await fetch('/api/v1/client/send-request/' + designerId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body
+            });
+            const message = await response.text();
+            alert(message || (response.ok ? 'Request sent successfully!' : 'Unable to send request. Please try again.'));
+            if (response.ok) form.reset();
+        } catch (error) {
+            alert('Could not connect to Tasmeem Hub. Please try again.');
+        }
+    });
+}
 </script>
-</body></html>
+</body>
+</html>
